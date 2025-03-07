@@ -1,0 +1,427 @@
+<?php
+$session = Model_StaticFunctions::sessionContent();
+?>
+<div id="photoWindowContainer" style="margin-top: 50px; position: fixed;" class="hidden"></div>
+<script>
+ var editMinipublisher = new nicEditor({iconsPath : '/graphics/en/icons/nicEditorIcons.gif',buttonList : ['bold','italic','underline']});
+</script>
+
+<!--<div class="UIWindow allComments photo hidden">
+    <div class="titleBar">
+        <h2>New comments on this photo</h2><span class="closeBtn" title="Close"><a href="#"></a></span>
+    </div>
+    <div class="UIWindowContents">
+        <div class="photoChrome">
+            <div class="toolbar">
+                <a class="backToProfilePicsBtn" href="photo_gallery.html">&raquo;&nbsp;Go to photo</a>
+            </div>
+            <div class="photoContainer"><img class="photo" src="/graphics/en/imgs/user_silhouette.gif" /></div>
+        </div>
+        <hr />
+       <span class="commentCounter">Showing comments <span class="lowerLimit">20</span> to <span class="upperLimit">40</span> of <span class="totalComments">40</span></span> 
+        <div class="comments">
+            <div class="loadPreviousCommentsBtn">Show previous comments</div> 
+            <div class="comment">
+                <div class="commentAuthorPicture"><a href="#"><img src="/graphics/en/imgs/user_silhouette.gif" class="commentAuthorThmbnlSmall" alt="Abdullah Khan" /></a></div>
+                <div class="commentbody">
+                    <h3 class="authorName"><a href="#">Abdullah Khan</a></h3>
+                    <div class="commentTxt">WTF? LMAO :D</div>
+                </div>
+                <span class="timestamp comment">Posted on March 1st, at 1:23pm</span> ⋅ <span class="deleteBtn">Delete</span>
+            </div>
+            <div class="comment">
+                <div class="commentAuthorPicture"><a href="#"><img src="/graphics/en/imgs/user_silhouette.gif" class="commentAuthorThmbnlSmall" alt="Ali Razzouk" /></a></div>
+                <div class="commentbody">
+                    <h3 class="authorName"><a href="#">Ali Razzouk</a></h3>
+                    <div class="commentTxt">Yeah Nizar, FYL. xD</div>
+                </div>
+                <span class="timestamp comment">Posted on March 1st, at 1:30pm</span> ⋅ <span class="editBtn">Edit</span> ⋅ <span class="deleteBtn">Delete</span>
+            </div>
+            <div class="comment new">
+                <div class="commentAuthorPicture"><a href="#"><img src="/graphics/en/imgs/user_silhouette.gif" class="commentAuthorThmbnlSmall" alt="Abdullah Khan" /></a></div>
+                <div class="commentbody">
+                    <h3 class="authorName"><a href="#">Abdullah Khan</a></h3>
+                    <div class="commentTxt">I'm in love with...</div>
+                </div>
+                <span class="timestamp comment">Posted on June 1st, at 1:23pm</span> ⋅ <span class="deleteBtn">Delete</span>
+            </div>
+        </div>
+        <div class="commentArea">
+            <h4>Leave a comment...</h4>
+            <div class="commentBox">
+                <div class="minipublisher">
+                    <div id="minieditor" class="minieditor"></div>
+                </div>
+                <div class="postCommentBtn">
+                    <a href="#" class="UIButton green post"><span>Comment</span></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> -->
+<div id="customizeNotifsLink" class="hidden"><a href="#">Customize the types of notifications you receive</a></div>
+<h2 id="pageTitle">My Notifications</h2>
+<div id="newNotifications">
+    <h4>New Notifications</h4><hr class="UIHSeparator" />
+    <?php
+    foreach($this->notifs as $notif) {
+
+        $actionids = json_decode($notif["actionid"]);
+        $senderids = json_decode($notif["senderid"]);
+        $notifids = json_decode($notif["id"]);
+        $notifid = $notifids[0];
+
+        $actionCount = count($actionids);
+        $senderCount = count(array_unique($senderids));
+
+        if($senderCount == 1) {
+            $usersTable = new Model_DbTable_Users();
+            $user = $usersTable->getUserById($senderids[0]);
+        }
+
+        // Time
+
+        $relativeTime = Model_StaticFunctions::relativeTime(strtotime($notif["time"]));
+        $exactTime = Model_StaticFunctions::formatDateFromTimestamp($notif["time"]);
+
+        switch($notif["rtx"]) {
+            case 1:
+// Reply on scape-------------
+                $class = "reply";
+                
+                $scapeTable = new Logged_Model_DbTable_Scape();
+                $reciverid = $scapeTable->getUserid($notif["subjidx"]); // Get userid from the scape in question
+                
+                if($actionCount == 1 && $senderCount == 1) {
+                
+                if($reciverid == $GLOBALS["session"]->id){ // If this is a notif for the a subject that the session user owns
+                    $notifText = <<<MARKUP
+            <strong>1</strong> new reply, <a href="/{$user["username"]}/profile" >{$user["fullname"]}</a> replied to your <a href="/{$session->username}/scape/{$notif["subjidx"]}" >scape</a>.
+MARKUP;
+                }else{// else this is a notif for the action some other dude did.
+                 
+               $scapeOwnerUsername = $scapeTable->getUsername($notif["subjidx"]);
+               
+               $notifText = <<<MARKUP
+             <strong>1</strong> new reply, <a href="/{$user["username"]}/profile" >{$user["fullname"]}</a> replied to a <a href="/{$scapeOwnerUsername}/scape/{$notif["subjidx"]}" >scape</a> that you replied to.
+MARKUP;
+                }
+               }elseif($actionCount > 1 && $senderCount == 1) {
+                 if($reciverid == $GLOBALS["session"]->id){ // -- Session user is owner
+                    $notifText = <<<MARKUP
+            <strong>$actionCount</strong> new replies, <a href="/{$user["username"]}/profile" >{$user["fullname"]}</a> replied to your <a href="/{$session->username}/scape/{$notif["subjidx"]}" >scape</a>.
+MARKUP;
+            }else{ // -- Session user is NOT owner
+             $scapeOwnerUsername = $scapeTable->getUsername($notif["subjidx"]);
+             $notifText = <<<MARKUP
+                  <strong>$actionCount</strong> new replies, <a href="/{$user["username"]}/profile" >{$user["fullname"]}</a> replied to a <a href="/{$scapeOwnerUsername}/scape/{$notif["subjidx"]}" >scape</a> that you replied to.
+MARKUP;
+            }
+                }elseif($actionCount > 1 && $senderCount > 1) {
+            if($reciverid == $GLOBALS["session"]->id){ // -- Session user is owner     
+                    $notifText = <<<MARKUP
+            <strong>$actionCount</strong> new replies, <a onclick="O.UIWindow.listUsers('{$notif["senderid"]}','reply');">{$senderCount} people</a> replied to your <a href="/{$session->username}/scape/{$notif["subjidx"]}" >scape</a>.
+MARKUP;
+            }else{
+             
+             $scapeOwnerUsername = $scapeTable->getUsername($notif["subjidx"]);
+             
+                  $notifText = <<<MARKUP
+            <strong>$actionCount</strong> new replies, <a onclick="O.UIWindow.listUsers('{$notif["senderid"]}','reply');">{$senderCount} people</a> replied to a <a href="/{$scapeOwnerUsername}/scape/{$notif["subjidx"]}" >scape</a> that you replied to.
+MARKUP;
+            }
+                }
+
+                break;
+            case 2:
+// Like on scape----------
+                $class = "like";
+
+                if($actionCount == 1 && $senderCount == 1) {
+                    $notifText = <<<MARKUP
+            <a href="/{$user["username"]}/profile" >{$user["fullname"]}</a> likes your <a href="/{$session->username}/scape/{$notif["subjidx"]}" >scape</a>.
+MARKUP;
+                }elseif($actionCount > 1 && $senderCount > 1) {
+                    $notifText = <<<MARKUP
+            <a onclick="O.UIWindow.listUsers('{$notif["senderid"]}','like');">{$senderCount} people</a> like your <a href="/{$session->username}/scape/{$notif["subjidx"]}" >scape</a>.
+MARKUP;
+                }
+
+                break;
+            case 5:
+// Like on reply-----------
+                $class = "like";
+                if($actionCount == 1 && $senderCount == 1) {
+                    $notifText = <<<MARKUP
+            <a href="/{$user["username"]}/profile" >{$user["fullname"]}</a> likes your <a onclick="O.comment.getAllOnElm('R{$notif["subjidx"]}');">reply</a>.
+MARKUP;
+                }elseif($actionCount > 1 && $senderCount > 1) {
+                    $notifText = <<<MARKUP
+            <a onclick="O.UIWindow.listUsers('{$notif["senderid"]}','like');">{$senderCount} people</a> like your <a onclick="O.comment.getAllOnElm('R{$notif["subjidx"]}');">reply</a>.
+MARKUP;
+                }
+                break;
+            case 8:
+// Like on photo-----------
+                $class = "like";
+                if($actionCount == 1 && $senderCount == 1) {
+                    $notifText = <<<MARKUP
+            <a href="/{$user["username"]}/profile" >{$user["fullname"]}</a> likes your <a href="/{$session->username}/gallery/photo/{$notif["subjidx"]}" >photo</a>.
+MARKUP;
+                }elseif($actionCount > 1 && $senderCount > 1) {
+                    $notifText = <<<MARKUP
+            <a onclick="O.UIWindow.listUsers('{$notif["senderid"]}','like');">{$senderCount} people</a> like your <a href="/{$session->username}/gallery/photo/{$notif["subjidx"]}" >photo</a>.
+MARKUP;
+                }
+                break;
+            case 3:
+// Dislike on scape-----------
+                $class = "dislike";
+                if($actionCount == 1 && $senderCount == 1) {
+                    $notifText = <<<MARKUP
+            <a href="/{$user["username"]}/profile" >{$user["fullname"]}</a> doesn't like your <a href="/{$session->username}/scape/{$notif["subjidx"]}" >scape</a>.
+MARKUP;
+                }elseif($actionCount > 1 && $senderCount > 1) {
+                    $notifText = <<<MARKUP
+            <a onclick="O.UIWindow.listUsers('{$notif["senderid"]}','dislike');">{$senderCount} people</a> don't like your <a href="/{$session->username}/scape/{$notif["subjidx"]}" >scape</a>.
+MARKUP;
+                }
+                break;
+            case 6:
+// Dislike on reply-----------
+                $class = "dislike";
+                if($actionCount == 1 && $senderCount == 1) {
+                    $notifText = <<<MARKUP
+            <a href="/{$user["username"]}/profile" >{$user["fullname"]}</a> doesn't like your <a onclick="O.comment.getAllOnElm('R{$notif["subjidx"]}');">reply</a>.
+MARKUP;
+                }elseif($actionCount > 1 && $senderCount > 1) {
+                    $notifText = <<<MARKUP
+            <a onclick="O.UIWindow.listUsers('{$notif["senderid"]}','dislike');">{$senderCount} people</a> don't like your <a onclick="O.comment.getAllOnElm('R{$notif["subjidx"]}');">reply</a>.
+MARKUP;
+                }
+                break;
+            case 9:
+// Dislike on photo-----------
+                $class = "dislike";
+                if($actionCount == 1 && $senderCount == 1) {
+                    $notifText = <<<MARKUP
+            <a href="/{$user["username"]}/profile" >{$user["fullname"]}</a> doesn't like your <a href="/{$session->username}/gallery/photo/{$notif["subjidx"]}" >photo</a>.
+MARKUP;
+                }elseif($actionCount > 1 && $senderCount > 1) {
+                    $notifText = <<<MARKUP
+            <a onclick="O.UIWindow.listUsers('{$notif["senderid"]}','dislike');">{$senderCount} people</a> don't like your <a href="/{$session->username}/gallery/photo/{$notif["subjidx"]}" >photo</a>.
+MARKUP;
+                }
+                break;
+            case 7:
+// Comment on photo-----------
+                $class = "comment";
+                
+                $photoTable = new Logged_Model_DbTable_Photo();
+                $reciverid = $photoTable->getUserid($notif["subjidx"]);
+                $username = $photoTable->getUsername($notif["subjidx"]);
+                $username = $username["username"];
+                
+                if($actionCount == 1 && $senderCount == 1) {
+                     if($reciverid == $GLOBALS["session"]->id){ // -- Session user is owner
+                    $notifText = <<<MARKUP
+            <strong>1</strong> new comment, <a href="/{$user["username"]}/profile" >{$user["fullname"]}</a> commented on your <a href="/{$session->username}/gallery/photo/{$notif["subjidx"]}/#comments" >photo</a>.
+MARKUP;
+                     }else{
+                    $notifText = <<<MARKUP
+            <strong>1</strong> new comment, <a href="/{$user["username"]}/profile" >{$user["fullname"]}</a> commented on a <a href="/{$username}/gallery/photo/{$notif["subjidx"]}/#comments" >photo</a> that you commented on.
+MARKUP;
+            }
+
+                }elseif($actionCount > 1 && $senderCount == 1) {
+               if($reciverid == $GLOBALS["session"]->id){ // -- Session user is owner
+                   $notifText = <<<MARKUP
+            <strong>$actionCount</strong> new comments, <a href="/{$user["username"]}/profile" >{$user["fullname"]}</a> commented on your <a href="/{$session->username}/gallery/photo/{$notif["subjidx"]}/#comments" >photo</a>.
+MARKUP;
+               }else{
+                   $notifText = <<<MARKUP
+            <strong>$actionCount</strong> new comments, <a href="/{$user["username"]}/profile" >{$user["fullname"]}</a> commented on a <a href="/{$username}/gallery/photo/{$notif["subjidx"]}/#comments" >photo</a> that you commented on.
+MARKUP;
+               }
+
+                }elseif($actionCount > 1 && $senderCount > 1) {             
+           if($reciverid == $GLOBALS["session"]->id){ // -- Session user is owner
+                    $notifText = <<<MARKUP
+            <strong>$actionCount</strong> new comments, <a onclick="O.UIWindow.listUsers('{$notif["senderid"]}','comment');">{$senderCount} people</a> commented on your <a href="/{$session->username}/gallery/photo/{$notif["subjidx"]}/#comments" >photo</a>.
+MARKUP;
+           }else{       
+                    $notifText = <<<MARKUP
+            <strong>$actionCount</strong> new comments, <a onclick="O.UIWindow.listUsers('{$notif["senderid"]}','comment');">{$senderCount} people</a> commented on a <a href="/{$username}/gallery/photo/{$notif["subjidx"]}/#comments" >photo</a> that you commented on.
+MARKUP;
+           }
+
+     }
+                break;
+            case 4:
+// Comment on reply-----------
+                $class = "comment";
+                $replyTable = new Logged_Model_DbTable_Reply();
+                $reciverid = $replyTable->getUserid($notif["subjidx"]);
+                
+                if($actionCount == 1 && $senderCount == 1) {
+                 
+                 if($reciverid == $GLOBALS["session"]->id){ // -- Session user is owner
+            $notifText = <<<MARKUP
+            <strong>1</strong> new comment, <a href="/{$user["username"]}/profile" >{$user["fullname"]}</a> commented on your <a onclick="O.comment.getAllOnElm('R{$notif["subjidx"]}');">reply</a>.
+MARKUP;
+                 }else{  // -- Session user is NOT owner
+            $notifText = <<<MARKUP
+            <strong>1</strong> new comment, <a href="/{$user["username"]}/profile" >{$user["fullname"]}</a> commented on a <a onclick="O.comment.getAllOnElm('R{$notif["subjidx"]}');">reply</a> that you commented on.
+MARKUP;
+}
+       }elseif($actionCount > 1 && $senderCount == 1) {
+           if($reciverid == $GLOBALS["session"]->id){ // -- Session user is owner
+                   $notifText = <<<MARKUP
+            <strong>$actionCount</strong> new comments, <a href="/{$user["username"]}/profile" >{$user["fullname"]}</a> commented on your <a onclick="O.comment.getAllOnElm('R{$notif["subjidx"]}');">reply</a>.
+MARKUP;
+           }else{ // -- Session user is NOT owner
+                  $notifText = <<<MARKUP
+            <strong>$actionCount</strong> new comments, <a href="/{$user["username"]}/profile" >{$user["fullname"]}</a> commented on a <a onclick="O.comment.getAllOnElm('R{$notif["subjidx"]}');">reply</a> that you commented on.
+MARKUP;
+            }
+            }elseif($actionCount > 1 && $senderCount > 1) {
+             if($reciverid == $GLOBALS["session"]->id){ // -- Session user is owner
+                    $notifText = <<<MARKUP
+            <strong>$actionCount</strong> new comments, <a onclick="O.UIWindow.listUsers('{$notif["senderid"]}','comment');" >{$senderCount} people</a> commented on your <a onclick="O.comment.getAllOnElm('R{$notif["subjidx"]}');">reply</a>.
+MARKUP;
+             }else{
+                    $notifText = <<<MARKUP
+            <strong>$actionCount</strong> new comments, <a onclick="O.UIWindow.listUsers('{$notif["senderid"]}','comment');" >{$senderCount} people</a> commented on a <a onclick="O.comment.getAllOnElm('R{$notif["subjidx"]}');">reply</a> that you commented on.
+MARKUP;
+              }
+             }
+                break;
+            case 10:
+// Watch on user-----------
+                $class = "watch";
+
+                if($actionCount == 1 && $senderCount == 1) {
+                 $watchlistTable = new Logged_Model_DbTable_Watchlist();
+                 if(!$watchlistTable->isWatching($GLOBALS["session"]->id,$user["id"])){
+                  $watchBack = "- <a onclick=\"O.watch.create(null,'{$user["id"]}');$(this).replaceWith('You are now watching {$user["fullname"]}')\">Watch back</a>";
+                 }
+                    $notifText = <<<MARKUP
+         
+            <a href="/{$user["username"]}/profile" >{$user["fullname"]}</a> is now watching you.$watchBack
+MARKUP;
+                }elseif($actionCount > 1 && $senderCount > 1) {
+                    $notifText = <<<MARKUP
+            <a onclick="O.UIWindow.listUsers('{$notif["senderid"]}','watch');" ><strong>{$actionCount}</strong> people</a> are now watching you.
+MARKUP;
+                }
+
+                break;
+            case 11:
+// Watch request accept on user-----------
+                $class = "watch";
+                break;
+               
+            case 12:
+// note on user-----------
+                $class = "noteboard";
+
+                if($actionCount == 1 && $senderCount == 1) {
+                    $notifText = <<<MARKUP
+            <a href="/{$user["username"]}/profile#/#noteboardView" >{$user["fullname"]}</a> left you a <a href="/{$GLOBALS['session']->username}/profile#/#noteboardView">note</a>.
+MARKUP;
+                }elseif($actionCount > 1 && $senderCount == 1) {
+                    $notifText = <<<MARKUP
+            <strong>$actionCount</strong> new notes, <a href="/{$user["username"]}/profile" >{$user["fullname"]}</a> left you <a href="/{$GLOBALS['session']->username}/profile#/#noteboardView">notes</a>.
+MARKUP;
+              }elseif($actionCount > 1 && $senderCount > 1) {
+                    $notifText = <<<MARKUP
+            <strong>$actionCount</strong> new notes, <a onclick="O.UIWindow.listUsers('{$notif["senderid"]}','note');" ><strong>{$actionCount}</strong> people</a> left you <a href="/{$GLOBALS['session']->username}/profile#/#noteboardView">notes</a>.
+MARKUP;
+                }
+
+                break;
+        }
+        if ($notif["impx"] == 0) {
+            $displayNew .= <<<MARKUP
+       <div class="newNotif notif {$class}" id="N{$notifid}">
+                    {$notifText}<span class="timestamp" title="{$exactTime}">{$relativeTime}</span>
+        <div class="userActions"><span class="deleteBtn" onclick="O.notif.deleteNotif('{$notifid}','{$notif["id"]}');" title="Remove">X</span></div>
+    </div>
+MARKUP;
+        }elseif($notif["impx"] > 0) {
+            $displayOld .= <<<MARKUP
+       <div class="newNotif notif {$class}" id="N{$notifid}">
+                    {$notifText}<span class="timestamp" title="{$exactTime}">{$relativeTime}</span>
+        <div class="userActions"><span class="deleteBtn" onclick="O.notif.deleteNotif('{$notifid}','{$notif["id"]}');" title="Remove">X</span></div>
+    </div>
+MARKUP;
+        }
+
+
+
+        unset($user,$notifText);
+    }
+
+    if(!$displayOld) {
+        $displayOld = <<<MARKUP
+       <span id="noNotifications">No notifications to display.</span>
+MARKUP;
+    }
+    if(!$displayNew) {
+        $displayNew = <<<MARKUP
+       <span id="noNewNotifications" style="margin-top:10px;">No new notifications.</span>
+MARKUP;
+    }
+
+    echo $displayNew;
+    ?>
+    <div class="newNotif notif dislike hidden">
+        <a href="#">Nizar Al 7omsi</a> doesn't like your <a href="#">scape</a>.<span class="timestamp">at 1:23pm, Today</span>
+        <div class="userActions"><span class="infoBtn" title="Why did I recieve this notification?">?</span><span class="deleteBtn" title="Remove">X</span></div>
+    </div>
+    <div class="new notif watch request hidden">
+        <a href="#">Creepy Crusader</a> wants to watch you.<span class="actions"><a href="#" class="action accept">Allow</a>&nbsp;-&nbsp;<a href="#" class="action ignore">Ignore</a></span><span class="timestamp">5 hours ago</span>
+        <div class="userActions">
+            <span class="infoBtn" title="Why did I recieve this notification?">?</span><span class="deleteBtn" title="Remove">X</span>
+        </div>
+    </div>
+    <div class="newNotif notif watch hidden">
+        <a href="#">Osama Bin Laden</a> is now watching you.<span class="timestamp">at 11:15pm, Yesterday</span>
+        <div class="userActions">
+            <div class="UITooltip">
+                <div class="tooltipText">
+                    <div class="closeBtn"></div>
+                    <strong>Why did I receive this?</strong><br />
+                    <a class="unsubscribe" href="#">Don't notify me anymore when someone watches me</a>
+                </div>
+                <div class="tooltipBubbleArrow"></div>
+            </div>
+            <span class="infoBtn" title="Why did I recieve this notification?">?</span><span class="deleteBtn" title="Remove">X</span></div>
+    </div>
+    <div class="newNotif notif mention hidden"><img src="/graphics/en/icons/at_symbol.png" /><a href="#">Mohammed Bin Shabib</a> mentioned you in a  <a href="#">scape</a>.<span class="timestamp">at 1:20pm, Today</span><div class="userActions"><span class="infoBtn" title="Why did I recieve this notification?">?</span><span class="deleteBtn" title="Remove">X</span></div></div>
+    <div class="newNotif notif note hidden"><img src="/graphics/en/icons/note.png" /><a href="#">Abdullah Khan</a> left you a <a href="#">note</a>.<span class="timestamp">at 8:00am, Yesterday</span><div class="userActions"><span class="infoBtn" title="Why did I recieve this notification?">?</span><span class="deleteBtn" title="Remove">X</span></div></div>
+</div>
+<div id="allNotifications">
+    <h4>Old Notifications<span></span></h4><hr class="UIHSeparator" />
+    <?= $displayOld; ?>
+    <div class="notif reply hidden"><b>8</b> new replies, <a href="#">3 people</a> replied to your <a href="#">scape</a>.<span class="timestamp">at 4:37pm, February 20</span><div class="userActions"><span class="infoBtn" title="Why did I recieve this notification?">?</span><span class="deleteBtn" title="Remove">X</span></div></div>
+    <div class="newNotif notif like hidden">
+        <a href="#">Nizar Al-Sibai</a> likes your <a href="#" class="photo">
+            <!--<div class="thmbnlPreview">
+                    <img class="thmbnl" src="/graphics/en/imgs/user_silhouette.gif">
+								</div>-->
+								photo</a>.<span class="timestamp">at 10:30pm, Today</span>
+        <div class="userActions"><span class="infoBtn" title="Why did I recieve this notification?">?</span><span class="deleteBtn" title="Remove">X</span></div>
+    </div>
+    <div class="notif comment hidden"><a href="#">Ali Habib</a> commented on your <a href="#">reply</a>.<span class="timestamp">at 7:09pm, February 21</span>
+        <div class="userActions">
+            <span class="deleteBtn" title="Remove">X</span></div></div>
+    <div class="notif comment photo hidden"><a href="#">Aymen Al-Mtowaq</a> commented on his <a href="#" class="photo">photo</a>.<span class="timestamp">at 3:00pm, January 21</span><div class="userActions">
+            <span class="deleteBtn" title="Remove">X</span></div></div>
+</div>
+
+<div class="loadMoreBtn hidden"><a>Show more</a></div>
+<!-- <span id="noNewNotifications" >No new notifications.</span>
+<span id="noNotifications">No notifications to display.</span>
+-->
+

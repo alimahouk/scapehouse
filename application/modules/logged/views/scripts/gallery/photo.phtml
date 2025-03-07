@@ -1,0 +1,278 @@
+<?php
+
+$username = $this->username;
+$userid = $this->id;
+$photoTable = new Logged_Model_DbTable_Photo();
+
+$userPhotos = $photoTable->getPhotos($userid, "user");
+$photo = $photoTable->getPhotos($this->photoid,'photo',$current);
+$caption = $photo[0]['caption'];
+$location = $photo[0]['location'];
+$time = Model_StaticFunctions::formatDateFromTimestamp($photo[0]['time'], "uploaded");
+$photoCount = count($userPhotos);
+
+$severName = $_SERVER['SERVER_NAME'];
+
+$photoDisplay = new Logged_Model_Photo();
+
+// Navigation ----
+foreach ($userPhotos as $key => $photo) {
+    
+    if ($this->photoid == $photo['id']) {
+        $cur = $key;
+    }
+}
+
+$nextUrl = "/{$this->username}/gallery/photo/{$userPhotos[$cur+1]["id"]}";
+$prevUrl = "/{$this->username}/gallery/photo/{$userPhotos[$cur-1]["id"]}";
+
+if($cur == 0){
+   $prevUrl = "/{$this->username}/gallery/photo/{$userPhotos[$photoCount-1]["id"]}"; 
+}elseif($photoCount-1 == $cur){
+   $nextUrl = "/{$this->username}/gallery/photo/{$userPhotos[0]["id"]}";  
+}
+
+if($GLOBALS["session"]->id == $userid) {
+    $owner = 1;
+}
+$currentPhoto = $photoTable->getCurrent($userid);
+
+if($currentPhoto["id"] == $this->photoid) {
+    $current = true;
+}
+
+?>
+<script>
+    $(document).ready(function(){
+        var comments = $(location).attr('hash');
+        if(comments == "#comments"){
+            O.UIWindow.comments('P<?=$this->photoid;?>');
+            O.animate.lockUI();
+            $('#commentWindow').show();
+        }
+    });
+</script>
+<!-- COMMENT WINDOW -->
+<div class="UIWindow allComments hidden" id="commentWindow">
+    <div class="titleBar">
+        <h2>Showing all comments on this photo</h2><span class="closeBtn" title="Close"><a onclick="O.animate.unlockUI();$('#commentWindow').fadeOut();"><span class="UIIcon px16 cross"></span></a></span>
+    </div>
+   <div class="UIWindowContents" id="UIWindowContentsComment">
+       
+    </div>
+</div>
+
+<!-- COMMENT WINDOW -->
+<!-- LIKES AND DISLIKES WINDOW -->
+<div class="UIWindow allLikesDislikes" id="userOpinionsWindow" style="display:none; position:fixed;">
+    <div class="titleBar">
+        <h2 id="likesDislikesWindowTitle">People who like this</h2><span class="closeBtn" title="Close"><a onclick="$('#userOpinionsWindow').fadeOut();$('#pageOverlay').hide();"><span class="UIIcon px16 cross"></span></a></span>
+    </div>
+
+    <div class="UIWindowContents" >
+        <div class="likesDislikes" id="likesDislikesList">
+        </div>
+        <div class="endMarker">That's it</div>
+    </div>
+</div>
+<!-- LIKES AND DISLIKES WINDOW -->
+<h2 class="userName">
+    <a href="/<?=$GLOBALS["session"]->username;?>/profile"><img class="userProfilePicThmbnl" src="<?=$photoDisplay->display($userid, "user", "small");?>" /></a>
+    <?php if($owner)echo"My";else echo"$this->fullname's";?> Profile Pictures
+    <a class="backToProfileBtn" href="/<?=$username;?>/profile"><?php if($owner)echo"My";else echo"$this->fullname's";?> Profile</a>
+</h2>
+
+<div id="photoMasterHolder">
+    <div class="mainContainer" id="P<?=$this->photoid;?>">
+    
+    <!-- Photo navigation -->
+    <?php if($photoCount != 1): ?>
+        <div class="photoNaviControls">
+            <a href="<?=$nextUrl;?>"><div onclick="nextPre(1);" class="nextBtn" title="Next"></div></a>
+            <a href="<?=$prevUrl;?>"><div onclick="nextPre(-1);"class="previousBtn" title="Previous"></div></a>
+        </div>
+     <?php endif; ?>   
+    <!-- Photo navigation end-->
+    
+        <div class="photoChrome">
+            <!-- Photo change notif -->
+            <div style="display:none;" class="UIWindow info" id="infoPictureChange">
+                <div class="titleBar">
+                    <h2>Scapehouse</h2><span class="closeBtn" title="Close" onclick="$('#infoPictureChange').fadeOut();"><a><span class="UIIcon px16 cross"></span></a></span>
+                </div>
+                <div class="UIWindowContents">
+                    <p class="message">This photo is now your profile picture.</p>
+                    <div class="UIPanel">
+                    <hr />
+                    <a onclick="$('#infoPictureChange').fadeOut();O.animate.unlockUI();" class="UIButton large cancelBtn green"><span class="UIButtonTxt">OK</span></a>
+                    </div>
+                </div>
+            </div>
+            <!-- Photo change notif end-->
+            <div class="toolbar">
+                <a class="backToProfilePicsBtn" href="/<?=$username;?>/gallery">&laquo;&nbsp;Back to profile pictures</a>
+                <span class="currentPhotoCounter"><span id="currentPic" class="currentPic"><?=$cur+1;?></span> of <span class="totalPics"><?=$photoCount;?></span></span>
+                <div class="privacySettingsBtn hidden"><a href="#">Privacy Settings</a></div>
+            </div>
+
+            <div class="photoContainer"><p class="photoHolder"><a href="<?=$nextUrl;?>"><img class="photo" id="photo" src="<?=$photoDisplay->display($this->photoid, "photo", "full");?>" /></a></p></div>
+            
+            <?php
+            if($caption) {
+                $displayNone = "style='display:none;'";
+            }
+            ?>
+
+
+        </div>
+        <div class="metadata">
+            <span class="uploadTimestamp"><?=$time;?></span>
+            <div id="locationHolder">
+                <?php $location = htmlspecialchars($location); if($location)echo "<dt class=\"location\">Location:</dt><dd id='location'>{$location}</dd>";else echo "<dt class=\"location\" style=\"display:none;\">Location:</dt><dd id='location'></dd>"; ?>
+            </div>
+        </div>
+        <?php if($owner): ?>
+        <!-- Editor -->
+        <div style="display:none;" class="details" id="detailEditor">
+            <dt>Location:</dt><dd><input type="text" class="UITextInput" id="editLocation" maxlength="40"/></dd>
+            <dt>Caption:</dt><dd><textarea id="editCaption" maxlength="500"></textarea></dd>
+            <div class="UIPanel">
+                <div>
+                    <div id="saveChanges" style="display:inline;">
+                        <a class="UIButton green large save" onclick="O.photo.edit('<?=$this->photoid;?>');"><span class="UIButtonTxt">Save Changes</span></a>
+                    </div>
+                    <a class="UIButton green large cancel" onclick="O.animate.photo.toggleEditor('hide');" ><span class="UIButtonTxt">Cancel</span></a>
+                </div>
+            </div>
+        </div>
+        <!-- Editor -->
+        
+<div id="confirmDelHolder">
+<!-- Delete confirm window -->
+<div style="display: none"  class="UIWindow confirm" id="confirmDel">
+            <div class="titleBar">
+                <h2>Confirm Action</h2><span class="closeBtn" title="Close" onclick="$('#confirmDel').fadeOut();O.animate.unlockUI();" ><a><span class="UIIcon px16 cross"></span></a></span>
+            </div>
+            <div class="UIWindowContents">
+                <p class="message">Are you sure you want to delete this photo?</p>
+                 <div class="UIPanel">
+                <hr />
+                <a  class="UIButton large confirmBtn red" onclick="O.photo.deletePhoto('<?=$this->photoid?>');$('#confirmDel').fadeOut();"><span class="UIButtonTxt">Delete</span></a>
+                <a onclick="$('#confirmDel').fadeOut();O.animate.unlockUI();" class="UIButton large cancelBtn grey"><span class="UIButtonTxt">Cancel</span></a>
+                </div>
+         </div>
+        </div>
+  </div>
+ <!-- Delete confirm window end-->       
+    <?php endif; ?>
+
+
+        <div class="photoActions">
+  <!--          <div class="popup share" id="sharePopup" style="display:none;top:40%;">
+                <h3>Share this photo with others</h3><span class="cancelBtn" onclick="$('#sharePopup').fadeOut();">Cancel</span>
+                <p>Give them this link:</p>
+                <input type="text" readonly="true" class="UITextInput" id="shareInput" onClick="$(this).select();" value="http://<?=$severName;?>/<?=$username;?>/gallery/photo/<?=$this->photoid;?>" />
+            </div>
+ -->
+ 
+ <!-- Photo Actions -->
+<?php if($owner): ?>
+<h3>Actions</h3>
+  <div id="editDetails" onclick="O.animate.photo.toggleEditor('show');"><a>Edit details&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></div>
+  <div onclick="$('#confirmDel').show();O.animate.lockUI();" id="deletePhoto"><a>Delete this photo</a></div>
+<?php endif; ?>
+            
+<?php if($owner && !$current):?>
+     <div id="makeProfilePic" onclick="O.photo.makeCurrent('<?=$this->photoid;?>');"><a>Use as profile picture</a></div>
+<?php endif; ?>
+<!-- Photo actions end -->
+
+<!-- <div id="sharePhoto" onclick="$('#sharePopup').fadeIn();$('#shareInput').select();" ><a>Share&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></div>
+<div id="reportPhoto"><a>Report this photo</a></div>
+-->
+        </div>
+        <!--caption-->
+        <div class="caption"><div id="caption"><?=nl2br(htmlspecialchars($caption));?></div><div id="addCaption" <?=$displayNone;?> ><?=($owner)?"<a class=\"addCaption\" onclick=\"O.animate.photo.toggleEditor('show');\">Add a caption</a>":NULL;?></div></div>
+        <!--caption end-->
+        <div id="lowerControls">
+            <div class="userActions">
+                <?php
+
+                $likeAndDislike = new Logged_Model_LikeAndDislike();
+                $likeAndDislike = $likeAndDislike->displayLikeAndDislike($this->photoid,'photo');
+
+                $likeBtn = "<a>Like</a>";
+                $dislikeBtn = "<a>Dislike</a>";
+
+                if ($likeAndDislike['Lyou'] || $likeAndDislike['LyouAndOther']|| $likeAndDislike['LyouAndNumOther']) {
+                    $likeBtn = "<a>Remove like</a>";
+                }
+                if ($likeAndDislike['Dyou'] || $likeAndDislike['DyouAndOther']|| $likeAndDislike['DyouAndNumOther']) {
+                    $dislikeBtn = "<a>Remove dislike</a>";
+                }
+
+                ?> 
+                <span class="commentBtn" onclick="O.animate.displayCommentBox('P<?=$this->photoid;?>');">Comment</span> &middot;
+                <span class="likeBtn" onclick="O.like.create('P<?=$this->photoid;?>');" ><?=$likeBtn;?></span> &middot;
+                <span class="dislikeBtn" onclick="O.dislike.create('P<?=$this->photoid;?>');"><?=$dislikeBtn;?></span>
+                <img class="spinner hidden" src="/graphics/en/UI/spinning_indicator.gif" style="position:absolute;margin-left: 10px;"/>
+            </div>
+            <div class="likesAndDislikes"><?php
+                $likesAndDislikes = new Logged_Model_LikeAndDislike();
+                $likesAndDislikes = $likesAndDislikes->displayLikeAndDislike($this->photoid, "photo");
+                echo $likesAndDislikes['display'];
+                ?>
+            </div>
+            <div class="showAllComments">
+            <?php
+
+            $comments = new Logged_Model_DbTable_Comment();
+            $numOfComments = count($comments->getAllCommentsOnElm($this->photoid, "photo"));
+
+            switch(true) {
+                case ($numOfComments == 0):
+
+                    $showCommentsMarkup =  <<<MARKUP
+                 <a class="showAllCommentsBtnLink" style="display:none;" onclick="O.UIWindow.comments('P$this->photoid');O.animate.lockUI();$('#commentWindow').show();" ></a>
+MARKUP;
+                    break;
+
+                case ($numOfComments == 1):
+
+                    $showCommentsMarkup = <<<MARKUP
+                  <a class="showAllCommentsBtnLink" onclick="O.UIWindow.comments('P$this->photoid');O.animate.lockUI();$('#commentWindow').show();" ><span class="UIIcon px16 comment"></span>Show <span class="commentCount">$numOfComments</span> comment.</a>
+MARKUP;
+                    break;
+
+                case ($numOfComments > 1):
+
+                    $showCommentsMarkup = <<<MARKUP
+
+                  <a class="showAllCommentsBtnLink" onclick="O.UIWindow.comments('P$this->photoid');O.animate.lockUI();$('#commentWindow').show();" ><span class="UIIcon px16 comment"></span>Show all <span class="commentCount">$numOfComments</span> comments.</a>
+MARKUP;
+
+                    break;
+
+            }
+
+            echo $showCommentsMarkup;
+
+            ?>
+</div>
+        </div>
+        <div class="bubbleArrowUp commentComponent" style="position:absolute; margin-left: 200px; display:none;"></div>
+        <div  class="commentBox commentComponent hidden">
+            <div style="" class="minipublisher">
+                <div id="panel" style="width:337px;"></div>
+                <div id="minieditor<?=$this->photoid;?>" class="minieditor"></div>
+            </div>
+            <div class="postCommentBtn" id="postCommentBtn">
+                <a class="UIButton green post commentComponent" onclick="O.comment.create('P<?=$this->photoid;?>');"><span class="UIButtonTxt">Comment</span></a>
+                <div class="paperweight"></div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+</div>

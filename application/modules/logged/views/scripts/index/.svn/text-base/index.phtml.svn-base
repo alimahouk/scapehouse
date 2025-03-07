@@ -1,0 +1,25 @@
+<?php
+//    $indexPath = 'docindex';
+////
+//    $text = "There are several different field types that can be stored for a single document. As we mentioned earlier, we want to store the keywords for our document, and also store some extra data that we can use when fetching the data. If we wanted to, we could duplicate the entire document content in our search index, however, this would be overkill and is unnecessary. It’s not as bad to duplicate smaller items such as the author name or document title as it’s only a small amount of data.";
+//    $index = Zend_Search_Lucene::open($indexPath);
+//
+//    $doc = new Zend_Search_Lucene_Document();
+//
+//    $doc->addField(Zend_Search_Lucene_Field::unIndexed('textu', $text));
+//    $doc->addField(Zend_Search_Lucene_Field::text('text', $text));
+//
+//    $index->addDocument($doc);
+//
+//    $index->commit();
+
+//  $indexPath = 'docindex';
+//
+//    $index = Zend_Search_Lucene::open($indexPath);
+//
+//    $hits = $index->find('fetching');
+//
+//    print_r($hits);
+//
+//    echo $hits->score;
+?>

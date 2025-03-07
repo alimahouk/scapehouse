@@ -1,0 +1,30 @@
+<?php 
+
+require_once '/phpthumb/ThumbLib.inc.php';
+
+error_reporting (0);
+
+$photo = $this->photo;
+echo $this->photo;
+    try {
+        $thumb = PhpThumbFactory::create($photo);
+
+    }
+    catch (Exception $e) {
+        $thumbException = PhpThumbFactory::create("graphics/en/imgs/user_silhouette.gif");
+        $thumbException->adaptiveResize(100,100);
+        $thumbException->show();
+
+    }
+
+
+if($thumb) {
+
+    $thumb->adaptiveResize(100,100);
+ //   $thumb->save("graphics/temp/$storeKey.jpg");
+    $thumb->show();
+
+
+}
+
+ ?>

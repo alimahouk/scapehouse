@@ -1,0 +1,99 @@
+<?php
+
+$browser = new Model_Browser();
+if( $browser->getBrowser() == Model_Browser::BROWSER_IE && $browser->getVersion() == 6 ) {
+    $ie6 = TRUE;
+}elseif($browser->getBrowser() == Model_Browser::BROWSER_IE && $browser->getVersion() == 6) {
+    $ie7 = TRUE;
+}
+?>
+<script type="text/javascript">
+    $(document).ready(function(){O.signup.bootloader();});
+</script>
+<div id="signupFormArea">
+    <h2>Sign up for Scapehouse</h2>
+    <p class="login">Already have an account? <a href="/login">Log in.</a></p>
+    <div>
+        <!-- Form starts here -->
+        <form action="/signup" id="signupForm" method="POST">
+
+            <table border="0" cellspacing="0">
+                <tbody>
+                    <tr id="firstnameField">
+                        <td class="label">Your first name:</td>
+                        <td class="field"><input type="text" name="firstname" class="UITextInput" id="firstname" value="<?=$_POST["firstname"];?>"/><div class="actionFeedback" style="display:none;"></div></td>
+                    </tr>
+
+                    <tr>
+                        <td class="error" colspan="2">
+                            <div id="firstnameError" class="errorInner hidden"><h3>Invalid first name</h3>Should be between 2 to 20 characters long<br />(alphabets only, spaces are allowed).</div>
+                        </td>
+                    </tr>
+                    <tr id="lastnameField">
+                        <td class="label">Your last name:</td>
+                        <td class="field"><input type="text" name="lastname" class="UITextInput" id="lastname" value="<?=$_POST["lastname"];?>"/><div class="actionFeedback"></div></td>
+                    </tr>
+                    <tr>
+                        <td class="error" colspan="2">
+                            <div id="lastnameError" class="errorInner hidden"><h3>Invalid last name</h3>Should be between 2 to 20 characters long<br />(alphabets only, spaces are allowed).</div>
+                        </td>
+                    </tr>
+                    <tr id="emailField">
+                        <td class="label">Your email:</td>
+                        <td class="field"><input type="text" name="email" class="UITextInput" id="email" value="<?=$_POST["email"];?>"/><div class="actionFeedback"></div></td>
+                    </tr>
+                    <tr>
+                        <td class="error" colspan="2">
+                            <div id="emailError" class="errorInner hidden">Invalid email address</div>
+                        </td>
+                    </tr>
+                    <tr id="usernameField">
+                        <td class="label">Choose a username:</td>
+                        <td class="field"><input type="text" name="username" class="UITextInput"  id="username" value="<?=$_POST["username"];?>"/><div class="actionFeedback"></div></td>
+                    </tr>
+                    <tr>
+                        <td class="error" colspan="2">
+                            <div id="usernameError" class="errorInner hidden"><h3>Invalid username</h3>Should be between 2 to 20 characters long<br />(spaces and some characters are not allowed).</div>
+                        </td>
+                    </tr>
+                    <tr id="passwordField">
+                        <td class="label">Your new password:</td>
+                        <td class="field"><input type="password" name="password"  class="UITextInput password" id="password" value="<?=$_POST["password"];?>"/><div class="actionFeedback"></div></td>
+                    </tr>
+                    <tr>
+                        <td class="error" colspan="2">
+                            <div id="passwordError" class="errorInner hidden"><h3>Invalid password</h3>Your password should have a minimum of 6 characters<br />(spaces are allowed).</div>
+                        </td>
+                    </tr>
+                    <tr id="captchaField">
+                        <td class="label"></td>
+                        <td><?php // require_once('recaptcha/recaptchalib.php');
+                            $publickey = "6LcMtLkSAAAAAKh6tA85667nh0B8CF9NJ63KLVxE";
+                            $privatekey = "6LcMtLkSAAAAAAuB_HpkGyZBZnpHDlboQ9pbK33X";
+
+                            $recaptcha = new Zend_Service_ReCaptcha($publickey, $privatekey);
+                            $recaptcha->setOptions(array("theme"=>"white"));
+                            echo $recaptcha->getHTML();
+                            ?></td>
+                    </tr>
+                    <tr>
+                        <td class="error" colspan="2">
+                            <div id="captchaError" class="errorInner hidden"><h3>Incorrect code</h3>Enter the code exactly as you see it in the box.</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div id="errorSpace" class="hidden">
+                <div id="errorSpaceInner">You must fill in all the fields correctly</div>
+            </div>
+            <span <?=($ie6||$ie7)?'class="submit"':NULL;?>><input type="submit" class="UIButton large green submit" id="signupBtn" value="Sign Up" onclick="O.signup.submit();return false;" /></span>
+
+        </form>
+
+        <!-- Form ends here -->
+
+        <span id="tos">By clicking Sign Up, you indicate that you agree to the <a href="/terms">Terms &amp; Conditions</a>.</span>
+
+    </div>
+</div>
+

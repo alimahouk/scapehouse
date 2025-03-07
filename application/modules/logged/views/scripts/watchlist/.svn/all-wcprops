@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/infobridge/!svn/ver/1042/trunk/application/modules/logged/views/scripts/watchlist
+END
+indexx.phtml
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/infobridge/!svn/ver/1014/trunk/application/modules/logged/views/scripts/watchlist/indexx.phtml
+END
+watchers.phtml
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/infobridge/!svn/ver/1042/trunk/application/modules/logged/views/scripts/watchlist/watchers.phtml
+END
+watching.phtml
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/infobridge/!svn/ver/1040/trunk/application/modules/logged/views/scripts/watchlist/watching.phtml
+END

@@ -1,0 +1,419 @@
+
+<?php
+
+// Reply counter and markup displayer-----
+$replyTable = new Logged_Model_DbTable_Reply();
+$replyCount = $replyTable->countRepliesOnScape($this->id);
+$replyCount = $replyCount["count"];
+
+$replyBatches = ceil($replyCount / 10);
+$replyBatches--;
+
+$photo = new Logged_Model_Photo();
+if($GLOBALS["session"]){
+$scapeboxTable = new Logged_Model_DbTable_Scapebox();
+$scapeboxTable->addImp($this->id);
+}
+?>
+<style>
+    .yui-toolbar-group-textflow{
+        padding:5px !important;
+    }
+    .yui-toolbar-group-height-width{
+        display: none !important;
+    }
+    .yui-toolbar-group-padding{
+        display: none !important;
+    }
+    .yui-toolbar-group-border{
+        display: none !important;
+    }
+    
+    .yui-toolbar-inline{
+        display:none !important;
+    }
+
+    .yui-editor-container{
+        border: 1px solid #CACACA !important;
+    }
+    img.yui-img{
+        max-width: 350px !important;
+        max-height: 350px !important;
+    }
+
+    span.collapse {
+        position:absolute;
+        z-index:2;
+    }
+
+    .yui-toolbar-titlebar h2{
+        display:none;
+    }
+
+    .yui-toolbar-subcont{
+        padding:5px !important;
+    }
+    #replyPubTargetHolder .bd{
+        margin-left:20px !important;
+    }
+
+    #replyPubTargetHolder .ft{
+        margin-left:20px !important;
+    }
+
+    .yui-toolbar-group-textflow{
+        width: 198px !important;
+    }
+
+    .yui-editor-panel input[type="text"] {
+        height: 16px;
+        background-color: #fff;
+        border: 1px solid #bdc7d8;
+        outline: none;
+        -webkit-transition: border 250ms ease-in-out, -webkit-box-shadow 250ms ease-in-out;
+    }
+
+    .yui-editor-panel input:focus {
+        border: 1px solid #00a851;
+        -webkit-box-shadow: 0 0 5px #00ad00;
+    }
+
+</style>
+<script>
+    $(document).ready(function(){O.scapePage.bootloader(<?=$replyBatches;?>,<?=$replyCount;?>);});
+</script>
+<!-- confirm box -->
+<?php if($this->userid == $GLOBALS["session"]->id): ?>
+
+<div style="position:fixed;" class="UIWindow confirm hidden" id="confirmDel">
+    <div class="titleBar">
+        <h2>Confirm Action</h2><span class="closeBtn" title="Close" onclick="$('#confirmDel').fadeOut();O.animate.unlockUI();" ><a><span class="UIIcon px16 cross"></span></a></span>
+    </div>
+    <div class="UIWindowContents">
+        <p class="message">Are you sure you want to delete this scape?</p>
+         <div class="UIPanel">
+        <hr />
+        <a onclick="O.scape.deleteScape('<?=$this->id?>',true)" class="UIButton large confirmBtn red"><span class="UIButtonTxt">Delete</span></a>
+        <a onclick="$('#confirmDel').fadeOut();O.animate.unlockUI();" class="UIButton large cancelBtn grey"><span class="UIButtonTxt">Cancel</span></a>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
+
+<div class="CGPost" id="S<?=$this->id;?>">
+    <div class="popup tagged scape hidden">
+        <h3>Tagged People</h3><span class="cancelBtn">Close</span>
+        <hr class="UIHSeparator" />
+        <div class="taggedUsersCounter"><strong>2</strong> people</div>
+        <div class="taggedUsers">
+            <h2>Nothing to display</h2>
+            <div class="tag user">
+                <div class="userInfo">
+                    <div class="currentUserIndicator">That's you!</div>
+                    <a class="untagBtn currentUser" href="">Untag me</a>
+                </div>
+                <a href=""><img src="/graphics/en/imgs/user_silhouette.gif" class="thmbnl user" alt="Ali Razzouk" /></a>
+                <h3 class="userName"><a href="#">Ali Razzouk</a></h3>
+                <div class="username">ali</div>
+            </div>
+            <div class="tag user">
+                <div class="userInfo">
+                    <a class="untagBtn" href="">Untag</a>
+                </div>
+                <a href=""><img src="/graphics/en/imgs/user_silhouette.gif" class="thmbnl user" alt="Nizar Al-Sibai" /></a>
+                <h3 class="userName"><a href="#">Nizar Al-Sibai</a></h3>
+                <div class="username">iCucumber</div>
+            </div>
+            <div class="endMarker">That's it</div>
+        </div>
+    </div>
+    <?php
+    // Echo the markup for the edit, delete, privacy buttons if scape Owner is == to the session user.
+    if ($GLOBALS["session"]->id == $this->userid): ?>
+
+    <div id="scapeOptions">
+        <div class="modBtnPanel">
+       <a class="dropDownMenuCandidate options scape" onclick="$('#scapeOptionsMenu').show();event.cancelBubble = true;event.stopPropagation();">Options</a>
+      </div>
+      <div class="modBtnMenuPanel">
+       <div class="UIMenu hidden" id="scapeOptionsMenu">
+        <ul>
+         <li class="UIMenuItem" onclick="O.scape.edit();"><a>Edit scape</a></li>
+         <li class="UIMenuItem" onclick="$('#confirmDel').show();O.animate.lockUI();"><a>Delete scape</a></li>
+        <!-- <hr class="UIHSeparator" />
+         <li class="UIMenuItem"><a>Privacy options</a></li> 
+         <hr class="UIHSeparator" />
+         <li class="UIMenuItem"><a>Edit Tags</a></li> -->
+        </ul>
+       </div>
+      </div>
+      <script> $('body').click(function(){$('#scapeOptionsMenu').hide();});</script>
+        </div>
+        <!-- Edit button tooltip -->
+<div style="display:none;z-index: 1;top: -80px;"class="UITooltip editInfo" id="editScapeToolTip" onclick="$(this).fadeOut();">
+    <div class="tooltipText">
+        <div id="editTooltipContent">
+            <strong>Go ahead and start editing!</strong><br />
+            Don't forget to click here to save your changes.
+        </div>
+    </div>
+    <div class="tooltipBubbleArrow"></div>
+</div>
+<!-- Done Editing button tooltip -->
+<div style="display:none;z-index: 1;top: -80px;"class="UITooltip editInfo" id="doneEditingScapeToolTip" onclick="$(this).fadeOut();">
+    <div class="tooltipText">
+        <div id="editTooltipContent">
+            <strong> Changes successfully saved!</strong>
+        </div>
+    </div>
+    <div class="tooltipBubbleArrow"></div>
+</div>
+
+<span class="UIButtonText doneEditingBtn" onclick="O.scape.edit();" id="scapeDoneEditingBtn" style="display:none;">Done editing</span>
+<?php endif; ?>
+    <div class="profilePic">
+        <a href="/<?=$this->username?>/profile"><img src="<?=$photo->display($this->userid, "user", "small");?>" class="authorThmbnlMedium" alt="Profile Picture" width="75" height="75" /></a>
+        <span class="postAuthorName"><a href="/<?=$this->username ?>/profile"><?=$this->fullname;?></a></span>
+
+    <div class="watchStatusHolder" >
+        <?= $this->watchStatus($this->userid); // Display Watch status?>
+     </div>    
+    
+    </div>
+    <div class="postBubbleArrow"></div>
+
+    <!-- SCAPE POST -->
+    <div id="scapePost">
+        <div style="display:none;" id="editUpperPanel"></div>
+        <div class="postTxt">
+            <div style="display:none;" class="headingEditor" id="headingEditor">
+                <textarea id="headingBox" class="postTitleEditor" style="height:50px" placeholder="Add a title..."><?=$this->title;?></textarea>
+                <span class="deleteBtn heading" onclick="$('#headingBox').val('');" title="Delete Heading">X</span>
+                <span class="charCounter">100</span>
+            </div>
+            <h2 id="postTitle" <?=($this->title)?NULL:"style='display:none;'";?>><?=$this->title;?></h2>
+            <div style="display:none;" id="editPublisher">
+                <form method="post">
+                    <div id="editEditor" class="auto-clear placeholder"></div>
+                </form>
+            </div>
+            <div id="scapeEditorHolder" class="hidden">
+                <div id="scapeEditor" style="width:auto;"></div>
+            </div>
+            <div id="scapeContent" style="width:auto;">
+                <?= $this->content;?>
+            </div>
+            <script>
+                $(document).ready(function(){
+                    $("#scapeContent").html(O.textToEmo($("#scapeContent").html()));
+                })
+            </script>
+            <div class="paperweight"></div>
+            <div class="tags">
+                <?php $receiverids = json_decode($this->receiverids);
+                    $tagCount = count($receiverids);
+                    if ($tagCount != 0):
+                    if($tagCount == 1){
+                    $people = "person";
+                    }else{
+                      $people = "people";
+                    }
+                    ?>
+                    <a class="seeTaggedBtn" style="text-decoration: none;color: black;cursor: text">&nbsp;<strong><?=$tagCount;?></strong> <?=$people;?> tagged here</a>
+                 <?php endif; ?>
+                    <div class="faceMash">
+                            <div>
+                <?php 
+                      $usersTable = new Model_DbTable_Users();
+                if($receiverids){     
+                foreach ($receiverids as $userid):
+                    $user = $usersTable->getUserById($userid);
+		    $imgSrc = $photo->display($userid,"user","small");
+                    ?>                                             
+                  <a href="/<?=$user["username"];?>/profile" class="faceMashLink"><span class="tooltip top left hidden"><span class="tooltipTxt"><?=$user["fullname"];?></span></span><img class="thmbnl" src="<?=$imgSrc;?>" /></a>
+                <?php endforeach;} ?>            
+                            </div>
+             <script>
+                $(".faceMashLink").hover(
+                function(){
+		$('.tooltip',this).stop(true,true).show()
+		},
+                function(){
+		$('.tooltip',this).stop(true,true).hide(
+		)});
+                $(".faceMashLink .tooltip").mouseover(function(){
+		$(this).hide()
+		});
+            </script>
+                    </div>
+            </div>
+            <?php // Reletive time ----
+            $relativeTime = Model_StaticFunctions::relativeTime(strtotime($this->time));
+            ?>
+            <span title="<?= Model_StaticFunctions::formatDateFromTimestamp($this->time); ?>" class="timestamp scape"><?=$relativeTime;?></span>
+        </div>
+    </div>
+
+
+
+       <!-- <span class="timestamp scape"><?= $this->time; ?></span> -->
+    <div class="likesAndDislikes" >
+        <?php
+        // Scapes likes and dislikes output.
+        $likeDislike = new Logged_Model_LikeAndDislike();
+        $result = $likeDislike->displayLikeAndDislike($this->id, "scape");
+        echo $result['display'];
+        ?>
+    </div>
+    <div class="postActions">
+        <span class="replyBtn"><a href="#publisher" onclick="<?=$this->loginJs?>">Reply</a></span> &middot; <span class="likeBtn scape" onclick="<?=$this->loginJs?>O.like.create('S<?= $this->id;?>');"><?php
+            // Like button displayer ----- Displays "Like" or "Remove Like" if the scape is liked or not.
+            $likeAndDislike = new Logged_Model_LikeAndDislike();
+            $likeAndDislike = $likeAndDislike->displayLikeAndDislike($this->id, "scape");
+
+            $likeBtn = "<a>Like</a>";
+
+            if ($likeAndDislike['Lyou'] || $likeAndDislike['LyouAndOther'] || $likeAndDislike['LyouAndNumOther']) {
+                $likeBtn = "<a>Remove like</a>";
+            }
+            echo $likeBtn;
+            ?></span> &middot; <span class="dislikeBtn scape" onclick="<?=$this->loginJs?>O.dislike.create('S<?= $this->id;?>');"><?php
+            // Dislike button displayer ----- Displays "Dislike" or "Remove Dislike" if the scape is disliked or not.
+            $likeAndDislike = new Logged_Model_LikeAndDislike();
+            $likeAndDislike = $likeAndDislike->displayLikeAndDislike($this->id, "scape");
+
+            $dislikeBtn = "<a>Dislike</a>";
+
+            if ($likeAndDislike['Dyou'] || $likeAndDislike['DyouAndOther'] || $likeAndDislike['DyouAndNumOther']) {
+                $dislikeBtn = "<a>Remove dislike</a>";
+            }
+            echo $dislikeBtn;
+                ?></span>&nbsp;<img class="spinner hidden" src="/graphics/en/UI/spinning_indicator.gif" style="position:absolute;margin-left: 10px;"/>
+
+    </div>
+    <div class="userComments"></div>
+    <?php
+
+    $cur = $replyCount-9;
+    $firstReplies = $replyCount % 10;
+    if ($firstReplies == 0) {
+        $firstReplies = 1;
+    }
+?>
+
+<?php if ($replyCount > 15): ?>
+    <div class="sliderComponent">
+ <a class="loadPrevReplies" id="loadPrevReplies" onclick="$('#UISliderPanel').show();$(this).hide();">
+        <span class="UIIcon px16 reply"></span>
+	<span class="btnTxt">Show previous replies</span><div class="replyCounter">Showing <span class="currentlyShowing" id="currentlyShowing"><?=$cur;?> to <?=$replyCount;?></span> of <span class="totalReplies" id="totalReplies"><?=$replyCount;?></span> replies</div>
+</a>
+</div>
+<?php endif; ?>
+
+</div>
+<?php if ($replyCount > 15): ?>
+
+    <div class="sliderComponent">
+    <div class="UISliderPanel" id="UISliderPanel" style="display:none;" >
+    <span class="hideBtn" id="sliderHideBtn" onclick="$('#UISliderPanel').hide();$('#loadPrevReplies').show();">&laquo; Hide this</span>
+
+    <div class="UISlider" id="slider"></div>
+    <div class="labelPanel">
+                    <span class="sliderLabel firstReplies" id="firstReplies"><?=$firstReplies;?></span>
+                    <span class="sliderLabel lastReplies" id="lastReplies"><?=$replyCount;?></span>
+                    <span class="sliderLabel replyCounter" id="replyCounter" >Showing replies <span class="lowerLimit"><?=$cur;?></span> to <span class="upperLimit"><?=$replyCount;?></span><span class="totalReplies"> of <?=$replyCount;?></span></span>
+    </div>
+</div>
+</div>
+
+<?php endif; ?>
+
+
+
+<div class="discussionWall">
+    <div class="replies" id="replies" >
+        <!-- Replies land here -->
+        <div class="replyBatch" id="batch1">
+            <?php
+            if($replyCount > 15) {
+                $initReplies = $replyTable->getRepliesOnScape($this->id, 10, $replyCount-10);
+            }else {
+                $initReplies = $replyTable->getRepliesOnScape($this->id, 15, 0);
+            }
+
+            if($initReplies)
+                foreach ($initReplies as $reply) {
+                    echo Logged_Model_Reply::display($reply,NULL,$this->userid);
+                }
+            ?>
+        </div>
+        <?php $i = $replyBatches + 1;
+        while ($i > 1) {
+            echo "<div class='replyBatch hidden' id='batch$i' style='display:none;'></div>";
+            $i--;
+        }
+        ?>
+    </div>
+    
+    <div class="replyArea">
+        <h3>Reply...</h3> 
+        <?php if(!$this->isPublic): ?>
+        <a href="/<?=$GLOBALS["session"]->username;?>/home"><img src="<?=$photo->display($GLOBALS["session"]->id, "user", "small")?>" class="authorThmbnlMedium" alt="Profile Picture" width="75" height="75" /></a>
+        <div class="bubbleArrow" style="background: transparent url('/graphics/en/sprites/publisher_arrows.png') no-repeat 0 -45px;"></div>
+        <div id="publisher">
+            <form method="post">
+                <!-- <div id="upperPanel" class="hidden"></div>-->
+                <div id="replyPubTargetHolder">
+                    <div id="replyPubTarget" style="width:auto;height:70px;"></div>
+                </div>
+                <div id="lowerPanel">
+                    <div class="table emoticons hidden">
+                        <h3>Choose one:</h3>
+                        <div class="outerMarker">
+                            <span class="emoticonContainer"><span class="emoticon wink"></span></span>
+                            <span class="emoticonContainer"><span class="emoticon winkLaugh"></span></span>
+                            <span class="emoticonContainer"><span class="emoticon winkTongue"></span></span>
+                            <span class="emoticonContainer"><span class="emoticon cry"></span></span>
+                            <span class="emoticonContainer"><span class="emoticon sad"></span></span>
+                            <span class="emoticonContainer"><span class="emoticon angel"></span></span>
+                            <span class="emoticonContainer"><span class="emoticon blush"></span></span>
+                            <span class="emoticonContainer"><span class="emoticon cool"></span></span>
+                            <span class="emoticonContainer"><span class="emoticon heart"></span></span>
+                            <span class="emoticonContainer"><span class="emoticon brokenHeart"></span></span>
+                            <span class="emoticonContainer"><span class="emoticon nerdy"></span></span>
+                            <span class="emoticonContainer"><span class="emoticon sleepy"></span></span>
+                            <span class="emoticonContainer"><span class="emoticon surprised"></span></span>
+                            <span class="emoticonContainer"><span class="emoticon smile"></span></span>
+                            <span class="emoticonContainer"><span class="emoticon angry"></span></span>
+                            <span class="emoticonContainer"><span class="emoticon speechless"></span></span>
+                            <span class="emoticonContainer"><span class="emoticon laugh"></span></span>
+                            <span class="emoticonContainer"><span class="emoticon sh"></span></span>
+                            <span class="emoticonContainer"><span class="emoticon facebook"></span></span>
+                            <span class="emoticonContainer"><span class="emoticon msn"></span></span>
+                            <span class="emoticonContainer"><span class="emoticon tongue"></span></span>
+                            <span class="emoticonContainer"><span class="emoticon worried"></span></span>
+                            <span class="emoticonContainer"><span class="emoticon hardLaugh"></span></span>
+                            <span class="emoticonContainer"><span class="emoticon hardLaughTongue"></span></span>
+                            <span class="emoticonContainer"><span class="emoticon headBang"></span></span>
+                            <span class="emoticonContainer"><span class="emoticon skype"></span></span>
+                            <span class="emoticonContainer"><span class="emoticon twitter"></span></span>
+                            <span class="emoticonContainer"><span class="emoticon youtube"></span></span>
+                            <span class="emoticonContainer"><span class="emoticon blackberry"></span></span>
+                            <span class="emoticonContainer"><span class="emoticon mp3"></span></span>
+                        </div>
+                        <div class="emoticonName"></div><div class="emoticonVal"></div>
+                    </div>
+                    <div id="insertEmoticonBtnContainer"  class="btnContainer hidden"><div id="insertEmoticonBtn" class="btn" title="Insert an emoticon"></div></div>
+                    <img class="spinner hidden" id="pubSpinner" src="/graphics/en/UI/spinning_indicator.gif" style="position:absolute;margin-left: 460px;margin-top: 10px;"/><div id="postBtn">
+                        <a onclick="O.reply.create();" id="postBtnLink" class="UIButton post large green"><span>Post</span></a>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div style="display:none; margin: 10px 15px 10px 109px; width: auto;" id="replyConfirmation" class="replyConfirmation"><span class="UIIcon px16 tick"></span>Your reply has been successfully posted.</div>
+        <div style="display:none; margin: 10px 15px 10px 109px; width: auto;" id="replyError" class="replyError"><span class="UIIcon px16 cross"></span>Snap! An error occurred. We weren't able to post your reply.</div>
+    <?php else: ?>
+    <p><a href="/login">Log in</a> or create a <strong><a href="/signup">free account</a></strong> to participate in this and many other scapes.</p>
+    <?php endif; ?>
+</div>
+</div>

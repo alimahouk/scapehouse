@@ -1,0 +1,24 @@
+<script>
+    $(document).ready(function(){$("#username").focus();});
+</script>
+<div id="loginFormArea">
+    <h2>Log in to Scapehouse</h2>
+    <?php if($_GET["error"]=="true"): ?>
+    <div id="loginError">Your username/password don't match. Try again.</div>
+    <?php endif; ?>
+    <div id="loginForm">   
+        <form method="post">
+            <label for="username" class="labelFor username"> <span>Username:</span>
+                <input type="text" name="username" id="username" class="UITextInput" value="<?= $_POST['username']; ?>" />
+            </label>
+            <label for="password" class="labelFor passwd"> <span>Password:</span>
+                <input onKeyPress="return submitenter(this,event)" type="password" name="password" class="UITextInput password" />
+            </label>
+            <label for="rememberMe" class="labelFor UICheckbox">
+                <input onKeyPress="return submitenter(this,event)" type="checkbox" name="rememberMe" class="UICheckbox" value="1"/> Remember me on this computer
+            </label>
+            <input type="submit" class="UIButton large green submit" value="Login" /><span id="signupBtn"> or <strong><a href="signup">Sign up!</a></strong></span>
+            <a class="forgotPasswd hidden" href="">Forgot your password?</a>
+        </form>   
+    </div>
+</div>

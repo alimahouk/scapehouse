@@ -1,0 +1,5 @@
+<?php
+
+$likeAndDislike = new Logged_Model_LikeAndDislike();
+$likeAndDislike = $likeAndDislike->displayLikeAndDislike($this->elmid,$this->idType);
+echo $likeAndDislike = $likeAndDislike['display'];

@@ -1,0 +1,12 @@
+<?php
+if($this->idType == "reply") {
+    $replyTable = new Logged_Model_DbTable_Reply();
+    $elmAuthorid = $replyTable->getUserid($this->elmid);
+}elseif($this->idType == "photo") {
+    $photoTable = new Logged_Model_DbTable_Photo();
+    $elmAuthorid = $photoTable->getUserid($this->elmid);
+}
+foreach($this->comments as $comment) {
+    echo Logged_Model_Comment::display($comment,FALSE,$elmAuthorid);
+}
+?>

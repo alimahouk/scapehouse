@@ -1,0 +1,117 @@
+<?php $photo = new Logged_Model_Photo(); ?>
+<?php if ($GLOBALS["session"]): ?>
+ <a class="UIButton large grey leaveNote"><span class="UIButtonTxt">+ Leave a note</span></a>
+ <?php endif; ?>
+                    <div class="noteInputPanel hidden"> 
+                                <h3>Leave a note...</h3>
+                                <a class="cancelNoteInput" href="#">Cancel</a>
+                                <div class="charCounter" id="noteCharCounter">300</div>
+                                <textarea id="notepad"></textarea>
+                                <div class="noteColorPalette">
+                                        <h4>Note color:</h4>
+                                        <div class="color yellow selected" title="Yellow" color="1"></div>
+                                        <div class="color pink" title="Pink" color="2"></div>
+                                        <div class="color blue" title="Blue" color="3"></div>
+                                        <div class="color green" title="Green" color="4"></div>
+                                </div>
+                                <img class="spinner hidden" id="pinNoteSpinner" src="/graphics/en/UI/spinning_indicator.gif" style="position:absolute;left:360px;top:260px;"/>
+                                <a class="UIButton large green pinNote" id="pinNote" onclick="O.note.create();"><span class="UIButtonTxt">Pin Note</span></a>
+                        </div>
+                    <?php if(!$this->notes): ?>
+                        <h3 class="noNotes"></h3>
+                        <script>
+                        if($("#owner").attr("userid")==$("#session").attr("userid")){
+                        $(".noNotes").html("You have a clean noteboard");   
+                        }else{
+                         $(".noNotes").html($("#owner").attr("firstname")+" has a clean noteboard");   
+                        }
+                        </script>
+                    <?php endif; ?>
+                        <div id="notes">
+                        <div class="bank hidden">
+                        <div class="note">
+                                <div class="notePin"></div>
+                                <div class="noteBody">
+                                        <span class="noteContent"></span>
+                                        <span class="noteTimestamp"></span>
+                                </div>
+                                <a class="UIButton red deleteNote"><span class="UIButtonTxt">Delete Note</span></a>
+                                <a class="userInfo">
+                                        <img class="thmbnl"/>
+                                        <span class="userName"></span>
+                                        <span class="username"></span>
+                                </a>
+                        </div>
+                        <div class="transit hidden"></div>
+                    </div>
+        <?php
+        foreach ($this->notes as $note){
+            echo Logged_Model_Note::display($note);
+        }
+        ?>
+                    </div>
+                        <?php if($this->noteCount > 15): ?>
+                        <a id="loadMoreBtnNotes" class="loadMoreBtn" onclick="O.note.load();">Show more</a>
+                        <?php endif; ?>
+                        
+            <script type="text/javascript">
+                    
+                $(".UIButton.leaveNote").click(function() {
+                        $(this).hide();
+                        $(".noteInputPanel").show();
+                        $(".noteInputPanel textarea").focus();
+                });
+                
+                $(".cancelNoteInput").click(function() {
+                        $(".noteInputPanel").hide();
+                        $(".UIButton.leaveNote").show();
+                        return false;
+                });
+                
+                whenkeydown = function(max_length)
+                {
+                        $(".noteInputPanel textarea").unbind().keyup(function()
+                        {
+                                // Check if the appropriate text area is being typed into
+                                if($(".noteInputPanel textarea"))
+                                {
+                                        // Get the data in the field
+                                        var text = $(this).val();
+
+                                        // Set number of characters
+                                        var numofchars = text.length;
+
+                                        //set the chars left
+                                        var chars_left = max_length - numofchars;
+
+                                        // Check if we are still within our maximum number of characters or not
+                                        if(numofchars <= max_length)
+                                        {
+                                                // Set the length of the text into the counter span
+                                                $(".noteInputPanel .charCounter").html("").html(chars_left).css("color", "#b3b3b3");
+                                        }
+                                        else
+                                        {
+                                                // Style counter in red
+                                                $(".noteInputPanel .charCounter").html("").html(chars_left).css("color", "#f00");
+                                        }
+                                }
+                        });
+                }
+
+                // Set max length
+                var max_length = 300;
+                var text = $('.noteInputPanel textarea').val();
+                var numofchars = text.length;
+                var charsLeft = 300 - numofchars;
+                
+
+                // Listen for key press events
+                whenkeydown(max_length);
+                
+                $(".noteColorPalette .color").click(function() {
+                        $(".noteColorPalette .color").removeClass("selected");
+                        $(this).addClass("selected");
+                });
+
+            </script>                        

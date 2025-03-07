@@ -1,0 +1,155 @@
+<?php
+$photo = new Logged_Model_Photo();
+
+$watch = $this->watch;
+$session = Model_StaticFunctions::sessionContent();
+//print_r($watch);
+foreach ($watch as $watch) {
+    $userTable = new Model_DbTable_Users();
+    $userid = $watch['userid'];
+    $targetid = $watch['targetid'];
+    if (isset($this->watchers)) {
+        $targetOrWatcher = $userTable->getUserById($userid);
+    } else {
+        $targetOrWatcher = $userTable->getUserById($targetid);
+    }
+    $userfullname = $targetOrWatcher['fullname'];
+    $username = $targetOrWatcher['username'];
+    $targetOrWatcherid = $targetOrWatcher['id'];
+    $id = $watch['id'];
+
+//This markup will always appear.
+    echo <<<MARKUP
+<div class="watchlistEntry" id="W$id">
+        <div class="watchlistBody">
+            <div class="userPicture"><a href="/$username/profile"><img src="{$photo->display($targetOrWatcherid, "user", "small")}" alt="Abdullah Khan" /></a></div>
+            <div class="entryDetails">
+                <h3 class="userName"><a href="/$username/profile">$userfullname</a></h3>
+                <div class="username">$username</div>
+            </div>
+        </div>
+MARKUP;
+// If this is not a call for displaying the watchers then.. display the people the user is watching
+    if (!$this->watchers) {
+        // This markup only appears if the owner of the watchlist is the session user.
+        if($userid == $session->id) {
+
+            echo <<<MARKUP
+      <div class="entryActions">
+            <div class="entryAction ignore" onclick="ajaxIgnore($id,'watchlist');">Ignore</div>
+        </div>
+    
+MARKUP;
+        }else {
+
+        // If not then this block checks to see if the target of the watch is the session user or not. and only displays this
+        // markup if false.
+            
+            if($targetOrWatcherid != $session->id) {
+
+                $watchlistTable = new Logged_Model_DbTable_Watchlist();
+                // if the watchlist owner is watching the target then it displays the following markup.
+                if($watchlistTable->getUserWatch($targetOrWatcherid)) {
+                    echo <<<MARKUP
+      <div class="entryActions">
+          <div class="watchStatus"><span class="UIIcon px16 tick"></span>Watching</div>
+        </div>
+MARKUP;
+                } else {
+                 // else it displays this markup with the watch button.
+                    echo <<<MARKUP
+      <div class="entryActions">
+            <div class="watchOptions">
+           <div class="UIButton grey watch" id="watchBtn" title="Add this person to your watchlist"><a id="watchBtnLink" onclick="ajaxWatch('$id','$userid','watchlist');"><span class="UIIcon px16 watchlist"></span>Watch</a></div>
+               </div>
+        </div>
+MARKUP;
+                }
+            }else {
+             // If the watch target is the session user then this markup is displayed.
+                echo <<<MARKUP
+                        <div class="entryActions">
+                <div class="currentUserIndicator">That's you!</div>
+                </div>
+MARKUP;
+            }
+
+        }
+    }
+    // If the this IS a request for the watchers then this markup is displayed.
+    elseif($this->watchers) {
+        
+        // If not then this block checks to see if the target of the watch is the session user or not. and only displays this
+        // markup if false.
+        if($targetOrWatcherid != $session->id) {
+
+            $watchlistTable = new Logged_Model_DbTable_Watchlist();
+            // if the watchlist owner is watching the target then it displays the following markup.
+            if($watchlistTable->getUserWatch($targetOrWatcherid)) {
+                echo <<<MARKUP
+      <div class="entryActions">
+          <div class="watchStatus"><span class="UIIcon px16 tick"></span>Watching</div>
+        </div>
+MARKUP;
+            } else {
+
+                $usersTable = new Model_DbTable_Users();
+            $user = $usersTable->getUserById($targetOrWatcherid);
+            if($user["mp"] == 1) {
+
+                echo <<<SENDREQ
+
+      <div class="entryActions">
+            <div class="watchOptions">
+           <div class="UIButton grey sendReq"><a href="#"><span class="UIIcon px16 lock"></span>Send Request</a></div>
+               </div>
+
+        </div>
+
+SENDREQ;
+
+            }else {
+                echo <<<MARKUP
+      <div class="entryActions">
+            <div class="watchOptions">
+           <div class="UIButton grey watch" id="watchBtn" title="Add this person to your watchlist"><a id="watchBtnLink" onclick="ajaxWatch('$id','$userid','watchlist');"><span class="UIIcon px16 watchlist"></span>Watch</a></div>
+               </div>
+
+        </div>
+MARKUP;
+            }
+                
+            }
+        } else {
+            // If the watch target is the session user then this markup is displayed.
+            echo <<<MARKUP
+                        <div class="entryActions">
+                <div class="currentUserIndicator">That's you!</div>
+                </div>
+MARKUP;
+        }
+    }
+
+    echo "</div>";
+
+}
+if(!$watch && $this->watchers) {
+    echo "<div class=\"noWatchers\">
+		<h3>Nobody's watching you yet.</h3>
+		</div>";
+} elseif (!$watch && !$this->watchers) {
+    echo <<<MARKUP
+    <div class="noWatching">
+            <h3>You're not watching anyone.</h3>
+            <div class="search">
+                    <form method="post">
+                    <h3>Find people by name or email</h3>
+                    <input type="text" class="UITextInput searchBox" placeholder="Search" name="searchBox" title="Search" />
+                    <a href="transition_1_with_results.html" class="UIButton search"><span>Search</span></a>
+                    </form>
+            </div>
+    </div>
+MARKUP;
+}
+
+?>

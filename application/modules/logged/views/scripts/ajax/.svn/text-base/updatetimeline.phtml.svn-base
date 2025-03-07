@@ -1,0 +1,3 @@
+<?php
+if($this->scape) {echo Logged_Model_Timeline::display($this->scape, "update");}
+?>

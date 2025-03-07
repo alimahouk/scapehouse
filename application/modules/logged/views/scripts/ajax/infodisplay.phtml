@@ -1,0 +1,445 @@
+<?php if($this->info["location"] || $this->info["sex"] || $this->info["nationality"] || $this->info["birthday"]) {$basicSectionClass = "";}else{$basicSectionClass = "hidden";} ?>
+<div class="infoContainer basic <?=$basicSectionClass;?>">
+    <h3><span class="UIIcon"></span>General Info</h3>
+    <table border="0" cellspacing="0">
+        <tbody>
+            <?php if($this->info["location"]):?>
+            <tr>
+                <td class="label">Location:</td>
+                <td class="value"><?=$this->info["location"];?></td>
+            </tr>
+            <?php endif; ?>
+            
+            <?php if($this->info["sex"]):?>
+            <tr>
+                <td class="label">Sex:</td>
+                <td class="value"><?=($this->info["sex"] == "m")?"Male":"Female";?></td>
+            </tr>
+            <?php endif; ?>
+            
+            <?php if($this->info["nationality"]):?>
+            <tr>
+                <td class="label">Nationality:</td>
+                <td class="value">
+                    <?php foreach($this->info["nationality"] as $key => $nationality): $i++;
+                            $countriesTable = new Logged_Model_DbTable_Countries();
+                            $country = $countriesTable->getCountryByCode($nationality);                 
+                    ?>
+                    <div class="listItem <?=($i == 1)?"firstItem":NULL;?> nationality"><img class="flag" src="/graphics/en/icons/flags/<?=$nationality;?>.png" width="16" height="16" /><?=$country;?></div>
+                    <? endforeach; ?>
+                </td>
+            </tr>
+            <?php endif; ?>
+            <?php if($this->info["birthday"]):
+            
+            $age = strtotime("now")-strtotime($this->info["birthday"]["date"]);
+            $age = date("Y",$age)-1970;
+            
+            switch($this->info["birthday"]["option"]){
+                case 1:
+                    $label = "Birthday:";
+                    if($age == 1){
+                        $y = "year";
+                    }else{
+                        $y = "years";
+                    }
+                    $birthday = date("F j, Y",strtotime($this->info["birthday"]["date"]))."<span class=\"valueDescription userAge\">- $age $y old</span>";
+                    break;
+                case 2:
+                    $label = "Birthday:";
+                    $birthday = date("F j",strtotime($this->info["birthday"]["date"]));
+                    break;
+                case 3:
+                    $label = "Age:";
+                    $birthday = "$age years old";
+                    break;
+            }
+            
+            ?>
+            <tr>
+                <td class="label"><?=$label;?></td>
+                <td class="value"><?=$birthday;?></td>
+            </tr>
+            <?php endif; ?>
+        </tbody>
+    </table>
+</div>
+
+<?php if($this->info["aboutme"]||
+        $this->info["book"]||
+        $this->info["game"]||
+        $this->info["tvshow"]||
+        $this->info["movie"]||
+        $this->info["music"]||
+        $this->info["interest"]||
+        $this->info["need"]){$personalSectionClass = "";}else{$personalSectionClass = "hidden";}?>
+                     
+<div class="infoContainer  personal <?=$personalSectionClass;?>">
+    <h3><span class="UIIcon"></span>Personal Info</h3>
+    <table border="0" cellspacing="0">
+        <tbody>
+        <?php if($this->info["aboutme"]): // About me ?>
+            <tr>
+                <td class="label">About me:</td>
+                <td class="value"><?=nl2br($this->info["aboutme"]);?></td>
+            </tr>
+            <?php if($this->info["book"]||
+                     $this->info["game"]||
+                     $this->info["tvshow"]||
+                     $this->info["movie"]||
+                     $this->info["music"]||
+                     $this->info["interest"]||
+                     $this->info["need"]): ?>
+            <tr class="separator">
+                <td></td>
+                <td class="value"></td>
+            </tr>
+            <?php endif; ?>
+        <?php endif; ?>
+        
+        <?php if($this->info["book"]): // Books ?>
+            <tr>          
+                <td class="label">Favorite books:</td>
+                <td class="value">
+                    <?php foreach($this->info["book"] as $key => $book): ?>
+                    <div class="listItem <?=($key == 0)?"firstItem":NULL;?> book"><?=$book;?></div>
+                    <?php endforeach; ?>
+                </td>
+            </tr>
+            <?php if($this->info["game"]||
+                     $this->info["tvshow"]||
+                     $this->info["movie"]||
+                     $this->info["music"]||
+                     $this->info["interest"]||
+                     $this->info["need"]): ?>
+            <tr class="separator">
+                <td></td>
+                <td class="value"></td>
+            </tr>
+            <?php endif; ?>
+        <?php endif; ?>
+        
+        <?php if($this->info["game"]): // Games ?>
+            <tr>          
+                <td class="label">Favorite games:</td>
+                <td class="value">
+                    <?php foreach($this->info["game"] as $key => $game): ?>
+                    <div class="listItem <?=($key == 0)?"firstItem":NULL;?> game"><?=$game;?></div>
+                    <?php endforeach; ?>
+                </td>
+            </tr>
+            <?php if($this->info["tvshow"]||
+                     $this->info["movie"]||
+                     $this->info["music"]||
+                     $this->info["interest"]||
+                     $this->info["need"]): ?>
+            <tr class="separator">
+                <td></td>
+                <td class="value"></td>
+            </tr>
+            <?php endif; ?>
+        <?php endif; ?>
+        
+        <?php if($this->info["tvshow"]): // TV shows ?>
+            <tr>          
+                <td class="label">Favorite TV shows:</td>
+                <td class="value">
+                    <?php foreach($this->info["tvshow"] as $key => $tvshow): ?>
+                    <div class="listItem <?=($key == 0)?"firstItem":NULL;?> tvshow"><?=$tvshow;?></div>
+                    <?php endforeach; ?>
+                </td>
+            </tr>
+            <?php if($this->info["movie"]||
+                     $this->info["music"]||
+                     $this->info["interest"]||
+                     $this->info["need"]): ?>
+            <tr class="separator">
+                <td></td>
+                <td class="value"></td>
+            </tr>
+            <?php endif; ?>
+        <?php endif; ?>
+        
+         <?php if($this->info["movie"]): // Movies?>
+            <tr>          
+                <td class="label">Favorite movies:</td>
+                <td class="value">
+                    <?php foreach($this->info["movie"] as $key => $movie): ?>
+                    <div class="listItem <?=($key == 0)?"firstItem":NULL;?> movie"><?=$movie;?></div>
+                    <?php endforeach; ?>
+                </td>
+            </tr>
+            <?php if($this->info["movie"]||
+                     $this->info["music"]||
+                     $this->info["interest"]||
+                     $this->info["need"]): ?>
+            <tr class="separator">
+                <td></td>
+                <td class="value"></td>
+            </tr>
+            <?php endif; ?>
+        <?php endif; ?>
+        
+        <?php if($this->info["music"]): // Music?>
+            <tr>          
+                <td class="label">Favorite music:</td>
+                <td class="value">
+                    <?php foreach($this->info["music"] as $key => $music): ?>
+                    <div class="listItem <?=($key == 0)?"firstItem":NULL;?> music"><?=$music;?></div>
+                    <?php endforeach; ?>
+                </td>
+            </tr>
+            <?php if($this->info["interest"]||
+                     $this->info["need"]): ?>
+            <tr class="separator">
+                <td></td>
+                <td class="value"></td>
+            </tr>
+            <?php endif; ?>
+        <?php endif; ?>
+        
+     <?php if($this->info["interest"]): // Interest?>
+            <tr>          
+                <td class="label">Interests:</td>
+                <td class="value">
+                    <?php foreach($this->info["interest"] as $key => $interest): ?>
+                    <div class="listItem <?=($key == 0)?"firstItem":NULL;?> interest"><?=$interest;?></div>
+                    <?php endforeach; ?>
+                </td>
+            </tr>
+            <?php if($this->info["need"]): ?>
+            <tr class="separator">
+                <td></td>
+                <td class="value"></td>
+            </tr>
+            <?php endif; ?>
+        <?php endif; ?>  
+        
+        <?php if($this->info["need"]): // Needs?>
+            <tr>          
+                <td class="label">Things I can't live without:</td>
+                <td class="value">
+                    <?php foreach($this->info["need"] as $key => $need): ?>
+                    <div class="listItem <?=($key == 0)?"firstItem":NULL;?> need"><?=$need;?></div>
+                    <?php endforeach; ?>
+                </td>
+            </tr>
+        <?php endif; ?>
+        
+        </tbody>
+    </table>
+</div>
+<div class="infoContainer contact">
+    <h3><span class="UIIcon"></span>Contact Info</h3>
+    <table border="0" cellspacing="0">
+        <tbody>
+            
+        <?php if($this->info["email"]): // emails?>
+            <tr>          
+                <td class="label">Emails:</td>
+                <td class="value">
+                    <?php foreach($this->info["email"] as $key => $email): ?>
+                    <div class="listItem <?=($key == 0)?"firstItem":NULL;?> need"><?=$email;?></div>
+                    <?php endforeach; ?>
+                </td>
+            </tr>
+            
+            <?php if($this->info["im"]||
+                     $this->info["mobile"]||
+                     $this->info["landphone"]||
+                     $this->info["bb"]||
+                     $this->info["website"]): ?>
+            <tr class="separator">
+                <td></td>
+                <td class="value"></td>
+            </tr>
+            <?php endif; ?>
+            
+        <?php endif; ?>
+        
+        <?php if($this->info["im"]): // IMs?>
+            <tr>
+                <td class="label">IM:</td>
+                <td class="value">
+                    <?php foreach($this->info["im"]["text"] as $key => $im):
+                            switch($this->info["im"]["type"][$key]){
+                                
+                                case "aim":
+                                    $imTypeName = "(AIM)";
+                                    break;
+                                case "gtalk":
+                                    $imTypeName = "(Google Talk)";
+                                    break;
+                                case "icq":
+                                    $imTypeName = "(ICQ)";
+                                    break;
+                                case "skype":
+                                    $imTypeName = "(Skype)";
+                                    break;
+                                case "winlive":
+                                    $imTypeName = "(Windows live)";
+                                    break;
+                                case "yahoo":
+                                    $imTypeName = "(Yahoo!)";
+                                    break;
+                                
+                            }
+                            $imClass = $this->info["im"]["type"][$key];
+                    ?>
+                    <div class="listItem <?=($key == 0)?"firstItem":NULL;?> IM"><?=$im;?><span class="valueDescription IM <?=$imClass;?>"><?=$imTypeName;?></span></div>
+                    <?php endforeach; ?>
+                </td>
+            </tr>
+            
+            <?php if($this->info["mobile"]||
+                     $this->info["landphone"]||
+                     $this->info["bb"]||
+                     $this->info["website"]): ?>
+            <tr class="separator">
+                <td></td>
+                <td class="value"></td>
+            </tr>
+            <?php endif; ?>
+            
+       <?php endif; ?>
+ 
+         <?php if($this->info["mobile"]): ?>
+            <tr>
+                <td class="label">Mobile phone:</td>
+                <td class="value">
+                    <div class="listItem firstItem"><?=$this->info["mobile"];?></div>
+                </td>
+            </tr>
+            <?php if($this->info["landphone"]||
+                     $this->info["bb"]||
+                     $this->info["website"]): ?>
+            <tr class="separator">
+                <td></td>
+                <td class="value"></td>
+            </tr>
+            <?php endif; ?>
+            
+        <?php endif; ?>
+        
+         <?php if($this->info["landphone"]): ?>
+            <tr>
+                <td class="label">Land phone:</td>
+                <td class="value">
+                    <div class="listItem firstItem"><?=$this->info["landphone"];?></div>
+                </td>
+            </tr>
+            <?php if($this->info["bb"]||
+                     $this->info["website"]): ?>
+            <tr class="separator">
+                <td></td>
+                <td class="value"></td>
+            </tr>
+            <?php endif; ?>
+            
+        <?php endif; ?>
+        
+        <?php if($this->info["bb"]): ?>
+            <tr>
+                <td class="label">BlackBerry PIN:</td>
+                <td class="value">
+                    <div class="listItem firstItem"><?=$this->info["bb"];?></div>
+                </td>
+            </tr>
+            <?php if($this->info["website"]): ?>
+            <tr class="separator">
+                <td></td>
+                <td class="value"></td>
+            </tr>
+            <?php endif; ?>
+            
+        <?php endif; ?>
+        
+            
+      <?php if($this->info["website"]):
+            $url = (preg_match("/http:\/\//i", $this->info["website"]["url"]))?$this->info["website"]["url"]:"http://{$this->info["website"]["url"]}";
+      ?>
+            <tr>
+                <td class="label">Website:</td>
+                <td class="value">
+                    <?php if($this->info["website"]["name"]): ?>
+                    <div class="listItem firstItem"><a href="<?=$url;?>" target="_blank"><?=$this->info["website"]["name"]?></a><span class="valueDescription website"><a href="<?=$url;?>" target="_blank"><?=$url;?></a></span></div>
+                    <?php else: ?>
+                    <div class="listItem firstItem"><a href="<?=$url;?>" target="_blank"><?=$url;?></a></div>
+                    <?php endif; ?>
+                </td>
+            </tr>
+            <tr class="separator">
+                <td></td>
+                <td class="value"></td>
+            </tr>
+            
+        <?php endif; ?>
+            
+            <tr>
+                <td class="label">Scapehouse profile:</td>
+                <td class="value">
+                    <div class="listItem firstItem"><a href="http://scapehouse.com/<?=$this->ownerUsername;?>">http://scapehouse.com/<?=$this->ownerUsername;?></a></div>
+                </td>
+            </tr>
+            
+        </tbody>
+    </table>
+</div>
+<?php if($this->info["school"] || $this->info["collage"]){$educationSectionClass = "";}else{$educationSectionClass = "hidden";} ?>
+<div class="infoContainer education <?=$educationSectionClass;?>">
+    <h3><span class="UIIcon"></span>Education Info</h3>
+    <table border="0" cellspacing="0">
+        <tbody>
+            <?php if($this->info["school"]): ?>
+            <tr>
+                <td class="label">High School:</td>
+                <td class="value"><?=$this->info["school"]["text"];?><span class="valueDescription highSchool"><?=($this->info["school"]["year"])?"- Class of {$this->info["school"]["year"]}":NULL;?></span></td>
+            </tr>
+            
+            <?php if($this->info["collage"]): ?>
+            <tr class="separator">
+                <td></td>
+                <td class="value"></td>
+            </tr>
+         <?php endif; ?>
+            
+        <?php endif; ?>
+        
+            <?php if($this->info["collage"]): ?>
+            <tr>
+                <td class="label">Collage/University:</td>
+                <td class="value"><?=$this->info["collage"]["text"];?><span class="valueDescription college "><?=($this->info["collage"]["year"])?"- Class of {$this->info["collage"]["year"]}":NULL;?></span>
+        <?php if($this->info["major"]): ?> 
+                    <?php foreach($this->info["major"] as $key => $major): ?>
+                    <span class="valueDescription workingSince"><?=$major;?></span>
+                    <?php endforeach; ?>
+        <?php endif; ?>
+        
+                </td>             
+            </tr>        
+  <?php endif; ?>
+        
+        </tbody>
+    </table>
+</div>
+<?php if($this->info["company"]){$workSectionClass = "";}else{$workSectionClass = "hidden";} ?>
+<div class="infoContainer work <?=$workSectionClass;?>">
+    <h3><span class="UIIcon"></span>Work Info</h3>
+    <table border="0" cellspacing="0">
+        <tbody>
+            <tr>
+                <td class="label">Company:</td>
+                <td class="value"><?=$this->info["company"]["name"];?><span class="valueDescription jobPosition"><?=$this->info["company"]["position"];?></span><span class="valueDescription workingSince">
+                <?=($this->info["company"]["current"] == "true")?"Working here":NULL;?></span></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<?php if($this->isPublic): ?>
+<div id="halt">
+          <p>That's all the information you can see right now. To find out more, <a href="/signup">sign up for an account</a> or <a href="/login">log in</a>.</p>
+         </div>
+<?php endif; ?>
+<div id="halt" class="hidden">
+          <p>Hmm, looks like Abdullah doesn't have anything to share right now.</p><br />
+         </div>

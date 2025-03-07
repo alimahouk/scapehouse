@@ -1,0 +1,21 @@
+<?php
+if($this->type == "watchers") {
+    $watchlistProcessor = new Logged_Model_Watchlist();
+    $watchlistProcessor->watchers = 1;
+
+    if($this->watches) {
+        foreach($this->watches as $watch) {
+            echo $watchlistProcessor->display($watch);
+        }
+    }
+}elseif($this->type == "watching") {
+    $watchlistProcessor = new Logged_Model_Watchlist();
+    if($this->watches) {
+        foreach($this->watches as $watch) {
+            echo $watchlistProcessor->display($watch);
+        }
+    }
+}
+
+
+?>

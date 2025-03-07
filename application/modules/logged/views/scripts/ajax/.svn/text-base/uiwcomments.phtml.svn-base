@@ -1,0 +1,36 @@
+<?php $photo = new Logged_Model_Photo(); ?>
+        <div class="sectionOverlay hidden" style="width:420px;height:460px;"></div>
+        <div>
+            <div class="comments" id="comments" style="min-height:50px;">
+                <!-- comments land here -->
+        <?php $commentTable = new Logged_Model_DbTable_Comment();
+        $comments = $commentTable->getAllCommentsOnElm($this->id, $this->idType);
+        if($comments) {
+            foreach($comments as $comment) {
+                echo Logged_Model_Comment::display($comment, FALSE, $this->id);
+            }
+        }
+        ?>                
+            </div>
+            <div class="commentArea">
+                <h4 id="commentBoxHeading">Leave a comment...</h4>
+                <div class="commentBox" id="commentWindowCommentBox" style="margin-left:0px;">
+                     <div class="currentUserThmbnl"><a href="/<?=$GLOBALS["session"]->username;?>/"><img src="<?=$photo->display($GLOBALS["session"]->id, "user", "small");?>" class="commentAuthorThmbnlSmall" alt="Ali Razzouk" /></a></div>
+                    <div class="minipublisher">
+                        <div id="panelWindow" style="width:298px;"></div>
+                        <div id="minieditor" class="minieditor"></div>
+                    </div>
+                    <div class="postCommentBtn" id="postCommentBtnWindow">
+                        <a class="UIButton post green" onclick="O.comment.create('P<?=$this->id;?>','commentWindow');"><span class="UIButtonTxt">Comment</span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+<script>
+    if(!window.commentPublisherDestroyed && window.commentPublisherDestroyed !== undefined){
+        window.commentPublisher.destroy();
+        window.commentPublisherDestroyed = true;
+    }
+$("div.commentComponent").hide();
+O.publisher.create("minieditor","commentPublisher");
+</script>  

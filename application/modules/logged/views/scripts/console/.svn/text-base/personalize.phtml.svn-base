@@ -1,0 +1,27 @@
+    <h2 id="pageTitle">Settings<span class="UIBreadCrumb"><a href="/<?=$GLOBALS["session"]->username;?>/console">Settings Main Page</a>&nbsp;&raquo;&nbsp;<span class="currentLocation">Personalization</span></span></h2>
+    <div class="info">
+            <h3>Themes</h3>
+            <div class="colors">
+                    <a class="color pitchBlack" href="?theme=black">
+                            <div class="colorThmbnl"></div>
+                            <span class="colorName">Pitch Black</span>
+                    </a>
+                    <a class="color forestGreen" href="?theme=green">
+                            <div class="colorThmbnl"></div>
+                            <span class="colorName">Forest Green</span>
+                    </a>
+                    <a class="color oceanBlue" href="?theme=blue">
+                            <div class="colorThmbnl"></div>
+                            <span class="colorName">Ocean Blue</span>
+                    </a>
+                    <a class="color rubyRed" href="?theme=red">
+                            <div class="colorThmbnl"></div>
+                            <span class="colorName">Ruby Red</span>
+                    </a>
+                    <a class="color gummyPink" href="?theme=pink">
+                            <div class="colorThmbnl"></div>
+                            <span class="colorName">Gummy Pink</span>
+                    </a>
+            </div>
+    </div>
+</div>

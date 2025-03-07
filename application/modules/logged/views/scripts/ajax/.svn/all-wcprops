@@ -1,0 +1,167 @@
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/infobridge/!svn/ver/1232/trunk/application/modules/logged/views/scripts/ajax
+END
+displaytimeline.phtml
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/infobridge/!svn/ver/685/trunk/application/modules/logged/views/scripts/ajax/displaytimeline.phtml
+END
+likesdislikes.phtml
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/infobridge/!svn/ver/310/trunk/application/modules/logged/views/scripts/ajax/likesdislikes.phtml
+END
+editscape.xml.phtml
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/infobridge/!svn/ver/1085/trunk/application/modules/logged/views/scripts/ajax/editscape.xml.phtml
+END
+editscape.phtml
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/infobridge/!svn/ver/242/trunk/application/modules/logged/views/scripts/ajax/editscape.phtml
+END
+editreply.phtml
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/infobridge/!svn/ver/788/trunk/application/modules/logged/views/scripts/ajax/editreply.phtml
+END
+infoeditor.phtml
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/infobridge/!svn/ver/823/trunk/application/modules/logged/views/scripts/ajax/infoeditor.phtml
+END
+search.phtml
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/infobridge/!svn/ver/1232/trunk/application/modules/logged/views/scripts/ajax/search.phtml
+END
+editcomment.phtml
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/infobridge/!svn/ver/789/trunk/application/modules/logged/views/scripts/ajax/editcomment.phtml
+END
+updatetimeline.phtml
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/infobridge/!svn/ver/685/trunk/application/modules/logged/views/scripts/ajax/updatetimeline.phtml
+END
+uiwfeedback.phtml
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/infobridge/!svn/ver/1110/trunk/application/modules/logged/views/scripts/ajax/uiwfeedback.phtml
+END
+postedreply.phtml
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/infobridge/!svn/ver/685/trunk/application/modules/logged/views/scripts/ajax/postedreply.phtml
+END
+uiwcomments.phtml
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/infobridge/!svn/ver/1040/trunk/application/modules/logged/views/scripts/ajax/uiwcomments.phtml
+END
+displaycomments.phtml
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/infobridge/!svn/ver/824/trunk/application/modules/logged/views/scripts/ajax/displaycomments.phtml
+END
+noteboard.phtml
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/infobridge/!svn/ver/1194/trunk/application/modules/logged/views/scripts/ajax/noteboard.phtml
+END
+uiwphoto.phtml
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/infobridge/!svn/ver/824/trunk/application/modules/logged/views/scripts/ajax/uiwphoto.phtml
+END
+showprivacy.phtml
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/infobridge/!svn/ver/754/trunk/application/modules/logged/views/scripts/ajax/showprivacy.phtml
+END
+displayphoto.xml.phtml
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/infobridge/!svn/ver/986/trunk/application/modules/logged/views/scripts/ajax/displayphoto.xml.phtml
+END
+displayphoto.phtml
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/infobridge/!svn/ver/304/trunk/application/modules/logged/views/scripts/ajax/displayphoto.phtml
+END
+uiwreply.phtml
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/infobridge/!svn/ver/1040/trunk/application/modules/logged/views/scripts/ajax/uiwreply.phtml
+END
+infodisplay.phtml
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/infobridge/!svn/ver/1173/trunk/application/modules/logged/views/scripts/ajax/infodisplay.phtml
+END
+postedcomment.phtml
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/infobridge/!svn/ver/685/trunk/application/modules/logged/views/scripts/ajax/postedcomment.phtml
+END
+imagetest.phtml
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/infobridge/!svn/ver/1054/trunk/application/modules/logged/views/scripts/ajax/imagetest.phtml
+END
+uiwlistusers.phtml
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/infobridge/!svn/ver/1040/trunk/application/modules/logged/views/scripts/ajax/uiwlistusers.phtml
+END
+likedislikelist.phtml
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/infobridge/!svn/ver/810/trunk/application/modules/logged/views/scripts/ajax/likedislikelist.phtml
+END
+displaywatchlist.phtml
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/infobridge/!svn/ver/754/trunk/application/modules/logged/views/scripts/ajax/displaywatchlist.phtml
+END
+watchlistsearch.phtml
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/infobridge/!svn/ver/754/trunk/application/modules/logged/views/scripts/ajax/watchlistsearch.phtml
+END
+displayreplies.phtml
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/infobridge/!svn/ver/824/trunk/application/modules/logged/views/scripts/ajax/displayreplies.phtml
+END

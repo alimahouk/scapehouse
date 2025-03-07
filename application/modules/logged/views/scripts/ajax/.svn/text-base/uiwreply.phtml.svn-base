@@ -1,0 +1,80 @@
+<?php
+$reply = $this->reply;
+$photo = new Logged_Model_Photo();
+
+$class = "CGOtherReply";
+if ($reply["author"] == 1) {
+    $class = "CGAuthorReply";
+}
+$strippedContent = strip_tags(preg_replace("/&nbsp;/"," ",$reply["content"]));
+if (mb_strlen($strippedContent,'UTF8') > 400) {
+    $reply["content"] = Model_StaticFunctions::trimWithoutImgAndLinks($strippedContent, 300, "...");
+}
+$relativeTime = Model_StaticFunctions::relativeTime(strtotime($reply["time"]));
+$exactTime = Model_StaticFunctions::formatDateFromTimestamp($reply["time"]);
+
+$scapeTable = new Logged_Model_DbTable_Scape();
+$scapeUsername = $scapeTable->getUsername($reply["scapeid"]);
+
+?>
+<div class="sectionOverlay hidden" style="width:560px;height:478px;"></div>
+<div class="CGReply <?=$class;?>" id="commentWindowReply" replyid="R<?=$reply["id"];?>" style="margin-top: 20px;">
+    <a href="/<?=$reply["username"];?>/"><img src="<?=$photo->display($reply["userid"], "user", "small");?>" class="authorThmbnlSmall" width="47" height="47" /></a>
+    <div class="replyBubbleArrow"></div>
+    <div class="replyBubble">
+        <div class="replyBody">
+            <span class="replyAuthor"><a href="/<?=$reply["username"];?>/" ><?=$reply["fullname"];?></a></span>
+            <span class="replyBodyTxt"><p><?=$reply["content"];?></p></span>
+            <script>
+                $(document).ready(function(){
+                    $("#replyWindow .replyBodyTxt").html(O.textToEmo($("#replyWindow .replyBodyTxt").html()));
+                });
+            </script>
+            <span class="timestamp reply" title="<?=$exactTime;?>"><?=$relativeTime;?></span>
+        </div>
+        <?php if(strstr($_SERVER["HTTP_REFERER"],"notif")): ?>
+        <a href="/<?=$scapeUsername;?>/scape/<?=$reply["scapeid"];?>" class="UIButton grey readMore" target="_blank" style="margin-bottom: 5px;"><span class="UIButtonTxt">&raquo;&nbsp;Go to scape</span></a>
+        <?php endif; ?>
+    </div>
+<!--<span class="totalComments">40  Comments</span>-->
+    <hr />
+   <!--<span class="commentCounter">Showing comments <span class="lowerLimit">20</span> to <span class="upperLimit">40</span> of <span class="totalComments">40</span></span>-->
+    <div class="comments" id="comments">
+        <!--<div class="loadPreviousCommentsBtn">Show previous comments</div>-->
+        <?php $commentTable = new Logged_Model_DbTable_Comment();
+        $comments = $commentTable->getAllCommentsOnElm($reply["id"], "reply");
+        if($comments) {
+            foreach($comments as $comment) {
+                echo Logged_Model_Comment::display($comment, FALSE, $reply["userid"]);
+            }
+        }
+        ?>
+    </div>
+    <?php if($GLOBALS["session"]): ?>
+    <div class="commentArea">
+        <h4 id="commentBoxHeading">Leave a comment...</h4>
+        <div class="commentBox" id="commentWindowCommentBox">
+            
+            <div class="currentUserThmbnl"><a href="/<?=$GLOBALS["session"]->username;?>/"><img src="<?=$photo->display($GLOBALS["session"]->id, "user", "small");?>" class="commentAuthorThmbnlSmall" alt="Ali Razzouk" /></a></div>
+            
+            <div class="minipublisher">
+                <div id="panel" style="width:338px;"></div>
+                <div id="minieditor" class="minieditor"></div>
+            </div>
+            <div class="postCommentBtn">
+                <a class="UIButton green post" id="postCommentBtnWindow" onclick="O.comment.create('R<?=$reply["id"];?>','commentWindow')"><span>Comment</span></a>
+            </div>
+            <div class="paperweight"></div>
+        </div>
+    </div>
+    <?php endif; ?>
+</div>
+
+<script>
+    if(!window.commentPublisherDestroyed && window.commentPublisherDestroyed !== undefined){
+        window.commentPublisher.destroy();
+        window.commentPublisherDestroyed = true;
+    }
+$("div.commentComponent").hide();
+O.publisher.create("minieditor","commentPublisher");
+</script>

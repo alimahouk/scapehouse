@@ -1,0 +1,51 @@
+<?php
+$session = Model_StaticFunctions::sessionContent();
+$photo = new Logged_Model_Photo();
+$photoData = $this->photo;
+
+?>
+<div class="UIWindow allComments photo" id="photoWindow">
+    <div class="titleBar">
+        <h2>Photo preview</h2><span class="closeBtn" title="Close" onclick="$('#photoWindow').fadeOut();$('#pageOverlay').hide();"><a><span class="UIIcon px16 cross"></span></a></span>
+    </div>
+    <div class="UIWindowContents" id="commentWindowPhoto" photoid="P<?=$photoData["id"];?>">
+        <div class="photoChrome">
+            <div class="toolbar">
+                <a class="backToProfilePicsBtn" href="/<?=$session->username;?>/gallery/photo/<?=$photoData["id"];?>">&raquo;&nbsp;Go to photo</a>
+            </div>
+            <div class="photoContainer"><img class="photo" src="<?=$photo->display($photoData["id"], "photo", "med");?>" /></div>
+        </div>
+        <hr />
+      <!--  <span class="commentCounter">Showing comments <span class="lowerLimit">20</span> to <span class="upperLimit">40</span> of <span class="totalComments">40</span></span> -->
+        <div class="comments" id="comments">
+            <!--<div class="loadPreviousCommentsBtn">Show previous comments</div>-->
+            <?php $commentTable = new Logged_Model_DbTable_Comment();
+            $comments = $commentTable->getAllCommentsOnElm($photoData["id"], "photo");
+            if($comments) {
+                foreach($comments as $comment) {
+                    echo Logged_Model_Comment::display($comment, FALSE, $photoData["userid"]);
+                }
+            }
+            ?>
+        </div>
+        <div class="commentArea">
+            <h4 id="commentBoxHeading">Leave a comment...</h4>
+            <div class="commentBox" id="commentWindowCommentBox">
+                <div class="minipublisher">
+                    <div id="panel" style="width:338px;"></div>
+                    <div id="minieditor" class="minieditor"></div>
+                </div>
+                <div class="postCommentBtn">
+                    <a class="UIButton green post" id="postCommentBtnWindow"><span>Comment</span></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        minipublisher = new nicEditor({
+            iconsPath : '/graphics/en/icons/nicEditorIcons.gif',
+            buttonList : ['bold','italic','underline']
+        });
+        minipublisher.setPanel("panel");
+        minipublisher.addInstance("minieditor");
+    </script>

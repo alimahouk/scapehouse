@@ -1,0 +1,30 @@
+<?php
+$session = Model_StaticFunctions::sessionContent();
+
+$watchlistTable = new Logged_Model_DbTable_Watchlist();
+$scapeTable = new Logged_Model_DbTable_Scape();
+$replyTable = new Logged_Model_DbTable_Reply();
+$commentTable = new Logged_Model_DbTable_Comment();
+$usersTable = new Model_DbTable_Users();
+
+$watching = count($watchlistTable->getAllTargetIds());
+$watchers = count($watchlistTable->getAllUserIds());
+$scapes = count($scapeTable->getAllScapeidsByUser($GLOBALS["session"]->id));
+$replies = count($replyTable->getAllReplyidsByUser());
+$comments = count($commentTable->getAllCommentidsByUser());
+$joinDate = date("l, F d, Y", strtotime($usersTable->getUserTime($session->id)));
+
+?>
+<h2 id="pageTitle">Settings<span class="UIBreadCrumb"><a href="/<?=$session->username?>/console">Settings Main Page</a>&nbsp;&raquo;&nbsp;<span class="currentLocation">Stats</span></span></h2>
+<div class="info">
+    <div class="dateJoined">You joined Scapehouse on: <span class="stat dateJoined"><?=$joinDate;?></span></div>
+    <ul>
+        <li>Total Watchers: <span class="stat totalWatchers"><?=$watchers;?></span>
+            <ul class="hidden"><li>Highest number of watchers reached: <span class="stat totalWatchingHighest">3,020</span></li></ul>
+        </li>
+        <li>Total Watching: <span class="stat totalWatching"><?=$watching;?></span></li>
+        <li>Number of scapes posted: <span class="stat totalScapes"><?=$scapes;?></span></li>
+        <li>Number of replies posted: <span class="stat totalReplies"><?=$replies;?></span></li>
+        <li>Number of comments posted: <span class="stat totalReplies"><?=$comments;?></span></li>
+    </ul>
+</div>

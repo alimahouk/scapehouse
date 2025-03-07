@@ -1,0 +1,185 @@
+<?php
+$photo = new Logged_Model_Photo;
+?>
+<script>
+$(document).ready(function() {O.profilePage.bootloader();});
+
+</script>
+
+<h2 class="userName">
+    <div class="watchStatusHolder" >
+        <?= $this->watchStatus($this->id); ?>
+     </div>
+
+<?=$this->fullname;?><span class="username">(<?=$this->username;?>)</span></h2>
+
+<!-- PM -->
+<div id="personalMsg" class="<?=(!$this->isOwner && !$this->info["pm"])?"empty":NULL;?>"><span id="pmEdit" class="editBtn <?=(!$this->isOwner)?"hidden":NULL;?>" title="Edit"></span><span id="pmSpan"><?=($this->info["pm"])?$this->info["pm"]:"A little personal message...";?></span></div>
+<!-- PM end-->
+<div id="profileInfo">
+    <div class="tabbedView">
+        <ul class="UITabContainer">
+            <li class="UITab timeline activeTab" id="timelineTab">
+                <a class="UITab" href="#/#timelineView">Timeline</a>
+            </li>
+            <li class="UITab info" id="infoTab">
+                <a class="UITab" href="#/#infoView">Info</a>
+            </li>
+            <li class="UITab noteboard" id="noteboardTab">
+                    <a class="UITab" href="#/#noteboardView">Noteboard</a>
+            </li>            
+        </ul>
+        <div class="UIView timeline" id="timeline">
+            <div class="leftColumn">
+                <div class="summary">
+                    <h3>Summary</h3>
+                    <div class="identification">
+                        <a class="currentProfilePic" href="/<?=$this->username?>/gallery"><img class="currentProfilePic" src="<?=$photo->display($this->id,"user","med");?>" /></a>
+                        <!-- <h4 class="userName">Ali Mahouk</h4>
+                         <span class="userAge">16 years old</span> -->
+                    </div>
+                    <table border="0" cellspacing="0">
+                        <tbody>
+                            <?php if($this->info["location"]): ?>
+                            <tr>
+                                <td class="label">Location:</td>
+                                <td class="value"><?php
+                                if(mb_strlen($this->info["location"],"UTF8") > 18){
+                                 echo  mb_substr($this->info["location"],0,18,"UTF8")."...";
+                                }else{
+                                   echo $this->info["location"];
+                                }
+                                ?></td>
+                            </tr>
+                            <?php endif; ?>
+                            <?php if($this->info["birthday"] && $this->info["birthday"]["option"] != "2"):
+                                $age = strtotime("now")-strtotime($this->info["birthday"]["date"]);
+                                $age = date("Y",$age)-1970;                            
+                            ?>
+                            <tr>
+                                <td class="label">Age:</td>
+                                <?php
+                           if($age == 1){
+                                $y = "year";
+                            }else{
+                                $y = "years";
+                            }
+                               ?>
+                                <td class="value"><?=$age;?> <?=$y;?> old</td>
+                            </tr>
+                            <?php endif; ?>
+                            <?php if($this->info["sex"]): ?>
+                            <tr>
+                                <td class="label">Sex:</td>
+                                <td class="value"><?=($this->info["sex"] == "m")?"Male":"Female";?></td>
+                            </tr>
+                            <?php endif; ?>
+                            <?php if($this->info["website"]):
+                            $url = (preg_match("/http:\/\//i", $this->info["website"]["url"]))?$this->info["website"]["url"]:"http://{$this->info["website"]["url"]}";?>
+                            <tr>
+                                <td class="label">Website:</td>
+                                <td class="value"><a href="<?=$url;?>"><?php
+                                if(mb_strlen($this->info["website"]["url"],"UTF8") > 18){
+                                 echo  mb_substr($this->info["website"]["url"],0,18,"UTF8")."...";
+                                }else{
+                                   echo $this->info["website"]["url"];
+                                }
+                                ?></a></td>
+                            </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+
+                    <?php if(!$this->isPublic): ?>
+                    <hr />
+                    <?php endif; ?>
+
+                    <div class="watchStatus <?=($this->isPublic)?'hidden':NULL;?>">
+
+                        <?php if($this->isOwner && !$this->isPublic): ?>
+                        <div class="currentUserIndicator">That's you!</div>
+                        <?php endif; ?>
+
+                        <?php if($this->isWatching && !$this->isOwner && !$this->isPublic): ?>
+                        <div class="Watching"><span class="UIIcon px16 tick"></span>Watching</div>
+                        <?php elseif(!$this->isWatching && !$this->isOwner && !$this->isPublic): ?>
+                        <div class="Watching"><span class="UIIcon px16 cross"></span>Watching</div>
+                        <?php endif; ?>
+
+                        <?php if($this->isWatcher && !$this->isOwner && !$this->isPublic): ?>
+                        <div class="Watches"><span class="UIIcon px16 tick"></span>Watches you</div>
+                        <?php elseif(!$this->isWatcher && !$this->isOwner && !$this->isPublic): ?>
+                        <div class="Watches"><span class="UIIcon px16 cross"></span>Watches you</div>
+                        <?php endif; ?>
+
+
+                    </div>
+                </div>
+                <div class="profileLinks">
+                    <?php if($this->isOwner): ?>
+                    <div id="editProfileLink"><a href="/<?=$this->username;?>/profile/edit">Edit my profile</a></div>
+                    <?php endif; ?>
+                    <?php if($this->isWatching): ?> 
+                    <div id="unwatchLink" onclick="O.watch.unwatch(null,<?=$this->isWatching;?>,false);window.location.reload();"><a>Unwatch</a></div>
+                    <?php endif; ?>
+                    <div id="profilePicsLink"><a href="/<?=$this->username?>/gallery">Profile pictures</a></div>
+                    <div id="watchersLink"><a href="/<?=$this->username;?>/watchlist/watching">Watchlist</a></div>
+                </div>
+
+                <?php if($this->watchers):?>
+                <div class="faceMash">
+                    <h3><?=$this->watcherCount?> watcher<?=($this->watcherCount!=1)?"s":NULL;?><span><a href="/<?=$this->username;?>/watchlist/watchers" >See all</a></span></h3>
+                    <div>
+                            <?php if($this->watchers):?>
+                                <?php foreach($this->watchers as $watcher):?>
+                        <a href="/<?=$watcher["username"];?>/profile" id="<?=$watcher["id"]?>" class="faceMashLink"><span class="tooltip top left hidden"><span class="tooltipTxt"><?=$watcher["fullname"];?></span></span><img class="thmbnl" src="<?=$photo->display($watcher["userid"],"user","small");?>" alt="<?=$watcher["fullname"];?>" /></a>
+                                <?php endforeach;?>
+                            <?php endif; ?>
+                    </div>
+                </div>
+                <?php elseif(!$this->watchers && !$this->isOwner && !$this->isPublic):?>
+                <div id="noWatchers">Hmmm, it looks like no one's  watching <?=$this->firstname;?> yet. Be the first!</div>
+                <?php elseif(!$this->watchers && $this->isOwner && !$this->isPublic):?>
+                <div id="noWatchers">Hmmm, it looks like no one's  watching you yet.</div>
+                <?php endif;?>
+            </div>
+            <script>
+                $(".faceMashLink").hover(
+                function(){$('.tooltip',this).stop(true,true).show()},
+                function(){$('.tooltip',this).stop(true,true).hide()});
+                $(".faceMashLink .tooltip").mouseover(function(){$(this).hide()});
+            </script>
+            <div class="rightColumn" id="rightColumn">
+                <div id="infoDisplay"></div>
+                <div id="noteboard" class="hidden"></div>
+                <div id="scapes">
+                    <div class="UIViewFilters">
+                        <a href="#" class="filter all active">All scapes</a>
+                     <!-- <?php if($this->isOwner): ?>
+                        <a href="#" class="filter tagged">Scapes about me</a>
+                        <?php else: ?>
+                        <a href="#" class="filter tagged">Scapes about <?=$this->firstname;?></a>
+                        <?php endif; ?> -->
+                    </div>
+
+                    <div class="timelineFeed" id="timelineFeed">
+
+                        <?php
+                        if($this->scapes) {
+                            foreach ($this->scapes as $scape) {
+                                echo $scape;
+                            }
+                        }else {
+                            echo '<div id="noPosts" class="noPosts"><span class="noPosts_icon"></span><strong>No scapes to display.</strong></div>';
+                        }
+                        ?>
+                    </div>
+                        <?php if($this->scapeCount > 10): ?>
+                        <a class="loadMoreBtn" id="loadMoreBtn" unselectable="on">Show more</a>
+                        <?php endif; ?>                    
+                </div>
+            </div>     
+        </div>
+    </div>
+</div>
+

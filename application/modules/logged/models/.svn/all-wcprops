@@ -1,0 +1,95 @@
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/infobridge/!svn/ver/1301/trunk/application/modules/logged/models
+END
+Photo.php
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/infobridge/!svn/ver/1054/trunk/application/modules/logged/models/Photo.php
+END
+Reply.php
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/infobridge/!svn/ver/1042/trunk/application/modules/logged/models/Reply.php
+END
+Publisher.php
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/infobridge/!svn/ver/1157/trunk/application/modules/logged/models/Publisher.php
+END
+Profile.php
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/infobridge/!svn/ver/1157/trunk/application/modules/logged/models/Profile.php
+END
+Watchlist.php
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/infobridge/!svn/ver/1040/trunk/application/modules/logged/models/Watchlist.php
+END
+Comment.php
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/infobridge/!svn/ver/1014/trunk/application/modules/logged/models/Comment.php
+END
+Note.php
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/infobridge/!svn/ver/1257/trunk/application/modules/logged/models/Note.php
+END
+Timeline.php
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/infobridge/!svn/ver/1312/trunk/application/modules/logged/models/Timeline.php
+END
+StripAttributes.php
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/infobridge/!svn/ver/986/trunk/application/modules/logged/models/StripAttributes.php
+END
+NotifMailer.php
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/infobridge/!svn/ver/1149/trunk/application/modules/logged/models/NotifMailer.php
+END
+LikeAndDislike.php
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/infobridge/!svn/ver/986/trunk/application/modules/logged/models/LikeAndDislike.php
+END
+Privacy.php
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/infobridge/!svn/ver/754/trunk/application/modules/logged/models/Privacy.php
+END
+Notif.php
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/infobridge/!svn/ver/564/trunk/application/modules/logged/models/Notif.php
+END
+NoteReply.php
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/infobridge/!svn/ver/1257/trunk/application/modules/logged/models/NoteReply.php
+END
+SmartDOMDocument.php
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/infobridge/!svn/ver/564/trunk/application/modules/logged/models/SmartDOMDocument.php
+END

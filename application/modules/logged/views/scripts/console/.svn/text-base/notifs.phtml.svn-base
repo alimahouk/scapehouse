@@ -1,0 +1,26 @@
+<?php $session = Model_StaticFunctions::sessionContent();?>
+
+<h2 id="pageTitle">Settings<span class="UIBreadCrumb"><a href="/<?=$session->username?>/console">Settings Main Page</a>&nbsp;&raquo;&nbsp;<span class="currentLocation">Notifications</span></span></h2>
+<div class="info">
+    <div class="attention">Changes won't be saved unless you click on <strong>"Save Changes"</strong> at the bottom.</div>
+    <form id="notifSettings">
+        <input class="UIRadioBtn" type="radio" name="setting" value="notifsOff" /> Turn off all notifications
+        <br />
+        <hr />
+        <input class="UIRadioBtn" type="radio" name="setting" value="notifsOn" /> Turn on notifications
+        <div class="customizeNotifs">
+           <!-- <ul>
+                <li id="watchers"><dt><input class="UICheckbox" type="checkbox" name="setting" value="watchers" /></dt><dd>New watchers</dd></li>
+                <li id="likes"><dt><input class="UICheckbox" type="checkbox" name="setting" value="likes" /></dt><dd>Likes</dd></li>
+                <li id="dislikes"><dt><input class="UICheckbox" type="checkbox" name="setting" value="dislikes" /></dt><dd>Dislikes</dd></li>
+                <li id="photoComments"><dt><input class="UICheckbox" type="checkbox" name="setting" value="photoComments" /></dt><dd>Photo comments</dd></li>
+                <li id="scapeReplies"><dt><input class="UICheckbox" type="checkbox" name="setting" value="scapeReplies" /></dt><dd>Scape replies</dd></li>
+                <li id="replyComments"><dt><input class="UICheckbox" type="checkbox" name="setting" value="replyComments" /></dt><dd>Comments on replies</dd></li>
+            </ul> -->
+            <ul>
+                <li id="emailNotifs"><dt><input class="UICheckbox" type="checkbox" name="setting" value="emailNotifs" /></dt><dd>Send me email notifications as well.</dd></li>
+            </ul>
+        </div>
+        <div class="UIPanel" style="margin-top: 85px;"><input type="submit" class="UIButton large green save" value="Save Changes" /></div>
+    </form>
+</div>

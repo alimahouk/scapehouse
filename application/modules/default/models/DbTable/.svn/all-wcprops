@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/infobridge/!svn/ver/1306/trunk/application/modules/default/models/DbTable
+END
+Test.php
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/infobridge/!svn/ver/1157/trunk/application/modules/default/models/DbTable/Test.php
+END
+Users.php
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/infobridge/!svn/ver/1306/trunk/application/modules/default/models/DbTable/Users.php
+END
+Verify.php
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/infobridge/!svn/ver/827/trunk/application/modules/default/models/DbTable/Verify.php
+END

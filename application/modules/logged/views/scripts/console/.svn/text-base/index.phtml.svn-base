@@ -1,0 +1,9 @@
+<h2 id="pageTitle">Settings</h2>
+<div class="categories">
+    <div class="category about"><a href="console/about">About</a></div>
+    <div class="category account"><a href="console/account">Account</a></div>
+    <!--<div class="category notifs"><a href="console/notifs">Notifications</a></div>-->
+    <!--<div class="category privacy"><a href="console/privacy">Privacy</a></div> -->
+    <div class="category personalization"><a href="console/personalize">Personalization</a></div>
+    <div class="category stats"><a href="console/stats">Stats</a></div>
+</div>

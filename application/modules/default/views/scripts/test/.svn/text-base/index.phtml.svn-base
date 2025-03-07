@@ -1,0 +1,22 @@
+<?php
+$mtime = microtime();
+$mtime = explode(" ",$mtime);
+$mtime = $mtime[1] + $mtime[0];
+$starttime = $mtime;
+;?>
+
+<?php
+
+        //echo mb_strlen("♥♥♥♥♥♥♥♥","UTF-8");
+        echo mb_substr("♥♥♥♥♥♥♥♥",0,5,"UTF8");
+
+?>
+
+<?php
+$mtime = microtime();
+$mtime = explode(" ",$mtime);
+$mtime = $mtime[1] + $mtime[0];
+$endtime = $mtime;
+$totaltime = ($endtime - $starttime);
+//echo "This page was created in ".$totaltime." seconds";
+;?>

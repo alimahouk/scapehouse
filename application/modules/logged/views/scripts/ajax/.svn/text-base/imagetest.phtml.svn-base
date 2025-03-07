@@ -1,0 +1,32 @@
+<?
+require_once '/phpthumb/ThumbLib.inc.php';
+error_reporting (0);
+$fileName = (isset($_GET['file'])) ? urldecode($_GET['file']) : null;
+
+$storeKey = Model_StaticFunctions::salted_sha1($fileName);
+
+if (file_exists("graphics/temp/$storeKey.jpg")) {
+    $thumb = PhpThumbFactory::create("graphics/temp/$storeKey.jpg");
+    $thumb->show();
+} else {
+    try {
+        $thumb = PhpThumbFactory::create($fileName);
+
+    }
+    catch (Exception $e) {
+        $thumbException = PhpThumbFactory::create("graphics/en/imgs/user_silhouette.gif");
+        $thumbException->adaptiveResize(100,100);
+        $thumbException->show();
+
+    }
+}
+
+if($thumb) {
+
+    $thumb->adaptiveResize(100,100);
+    $thumb->save("graphics/temp/$storeKey.jpg");
+    $thumb->show();
+
+
+}
+

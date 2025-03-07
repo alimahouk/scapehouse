@@ -1,0 +1,77 @@
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/infobridge/!svn/ver/1295/trunk/application/modules/logged/controllers
+END
+IndexController.php
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/infobridge/!svn/ver/1014/trunk/application/modules/logged/controllers/IndexController.php
+END
+HomeController.php
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/infobridge/!svn/ver/1110/trunk/application/modules/logged/controllers/HomeController.php
+END
+LogoutController.php
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/infobridge/!svn/ver/986/trunk/application/modules/logged/controllers/LogoutController.php
+END
+PublicscapeController.php
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/infobridge/!svn/ver/754/trunk/application/modules/logged/controllers/PublicscapeController.php
+END
+ScapeController.php
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/infobridge/!svn/ver/1157/trunk/application/modules/logged/controllers/ScapeController.php
+END
+GalleryController.php
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/infobridge/!svn/ver/1110/trunk/application/modules/logged/controllers/GalleryController.php
+END
+ProfileController.php
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/infobridge/!svn/ver/1157/trunk/application/modules/logged/controllers/ProfileController.php
+END
+ConsoleController.php
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/infobridge/!svn/ver/1219/trunk/application/modules/logged/controllers/ConsoleController.php
+END
+NotifsController.php
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/infobridge/!svn/ver/1110/trunk/application/modules/logged/controllers/NotifsController.php
+END
+WatchlistController.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/infobridge/!svn/ver/1110/trunk/application/modules/logged/controllers/WatchlistController.php
+END
+AjaxController.php
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/infobridge/!svn/ver/1310/trunk/application/modules/logged/controllers/AjaxController.php
+END
+ScapeboxController.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/infobridge/!svn/ver/1295/trunk/application/modules/logged/controllers/ScapeboxController.php
+END

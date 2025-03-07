@@ -1,0 +1,24 @@
+<?php
+$photo = new Logged_Model_Photo();
+
+
+if($this->hits){
+foreach($this->hits as $hit){
+    
+$img = $photo->display($hit["userid"].$hit["id"],"user","small");
+
+  echo <<<MARKUP
+<li class="suggestion" id="{$hit["userid"]}{$hit["id"]}" onmouseover="$(this).addClass('selected');" onmouseout="$(this).removeClass('selected');">
+    <h4 class="userName"><span class="userNameSpan">{$hit["fullname"]}</span><span class="username">{$hit["username"]}</span></h4>
+</li>
+MARKUP;
+
+}
+}else{
+//    echo <<<MARKUP
+//    <li class="noResults">
+//          <h4>No matches found.</h4>
+//         </li>
+//MARKUP;
+}
+?>

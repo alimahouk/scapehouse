@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html id="designoscape" class="<?= $this->pageClass; ?>">
+    <head>
+        <?= $this->headTitle(); ?>
+       <!-- <meta name="application-name" content="Scapehouse" />
+  <meta name="msapplication-task"
+  content="name=Home;action-uri=http://scapehouse.com;icon-uri=http://designoscape.ath.cx/graphics/en/IE9_JL_TEST/home.ico" />
+  <meta name="msapplication-task"
+  content="name=My Profile;action-uri=http://scapehouse.com/;icon-uri=http://designoscape.ath.cx/graphics/en/IE9_JL_TEST/profile.ico" />
+  <meta name="msapplication-task"
+  content="name=My Watchlist;action-uri=http://scapehouse.com/;icon-uri=http://designoscape.ath.cx/graphics/en/IE9_JL_TEST/watchlist.ico" />
+  <meta name="msapplication-task"
+  content="name=Notifications;action-uri=http://scapehouse.com/;icon-uri=http://designoscape.ath.cx/graphics/en/IE9_JL_TEST/notifs.ico" />
+  <meta name="msapplication-task"
+content="name=Settings;action-uri=http://scapehouse.com/;icon-uri=http://designoscape.ath.cx/graphics/en/IE9_JL_TEST/settings.ico" />-->
+        <?= $this->headMeta()->appendHttpEquiv('Content-Type', 'text/html;charset=utf-8')
+                ->appendName('description',
+                'Scapehouse is a tool that helps you find and share any kind of information with the people you want.') ; ?>
+               <!-- <link rel="shortcut icon" href="http://designoscape.ath.cx/graphics/en/IE9_JL_TEST/taskbar_icon.ico" /> -->
+               <link rel="icon" type="image/png" href="/graphics/en/UI/favicon.png" />
+        <?php
+            $cssServer = new Model_StyleSheets();
+            echo $cssServer->serveStyles();
+        ?>
+<!--            <link href="/stylesheets/css/webkit/design.css" media="screen" rel="stylesheet" type="text/css" >
+                <link href="/stylesheets/css/webkit/layout.css" media="screen" rel="stylesheet" type="text/css" >
+                <link href="/stylesheets/css/webkit/main.css" media="screen" rel="stylesheet" type="text/css" >
+                <link href="/stylesheets/css/webkit/scape.css" media="screen" rel="stylesheet" type="text/css" > -->
+                
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<!--        <script type="text/javascript" src="/scripts/ajax/dsajax.js"></script> -->
+<!--        <script type="text/javascript" src="<?=($_SERVER["SERVER_NAME"] != "localhost")?"http://infobridge.host56.com":NULL;?>/scripts/ds.js"></script> -->
+
+    </head>
+    <body>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-18768097-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+        <div id="pageSupport">
+            <div id="header">
+                <h1>
+                    <a href="index"><img id="SHlogo" src="/graphics/en/logos/scapehouse_364px.png" alt="Scapehouse" title="Welcome to the Scapehouse!" width="364" height="75" /></a></h1>
+            </div>
+            <div id="facade">
+                <?= $this->layout()->content; ?>
+                <div id="footer">
+                    <span class="copyright">&copy; 2010 Scapehouse</span>
+                    <ul id="footerLinks">
+                        <li><a href="/about">About</a></li>
+                        <li><a href="/contact">Contact</a></li>
+                        <li><a href="/privacy">Privacy</a></li>
+                        <li><a href="/terms">Terms</a></li>
+                        <li><a href="/help">Help</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>
+<script type="text/javascript" src="/scripts/<?=file_get_contents("filename.txt");?>_O.js"></script>

@@ -1,0 +1,5 @@
+
+<scapeContent>
+<content><?= rawurlencode($this->editedScape['content']); ?></content>
+<title><?= rawurlencode($this->editedScape['title']); ?></title>
+</scapeContent>

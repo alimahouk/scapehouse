@@ -1,0 +1,27 @@
+// Watchlist funcitons
+
+function ajaxWatch(targetid){
+
+    $.ajax({
+        type:"POST",
+        url: "/logged/ajax/watch",
+        data: "targetid=" + targetid,
+        success: function(){
+            $("#watchOptions").html("<div class='watchStatus'>Watching</div>");
+        }
+    });
+}
+
+function ajaxDisplayWatchlist(){
+
+    $.ajax({
+        type:"POST",
+        url: "/logged/ajax/displaywatchlist",
+       // data: "watching=" + watching,
+        success: function(data){
+
+            $("#watchlist").html(data);
+
+        }
+    });
+}

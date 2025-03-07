@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html id="designoscape" class="<?= $this->pageClass; ?>">
+    <head>
+        <?= $this->headTitle();?>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta http-equiv="Content-language" content="en" />
+        <meta name="description" content="Scapehouse is a tool that helps you find and share any kind of information with the people you want." />
+        <link rel="icon" type="image/png" href="/graphics/en/UI/favicon.png" />
+        <?php
+        $cssServer = new Model_StyleSheets();
+        echo $cssServer->serveStyles();
+        ?>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    </head>
+    <body>
+        <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-18768097-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+
+</script>
+        <div id="pageSupport">
+            <div id="header">
+                <h1><a href="<?=(strstr($this->pageClass,"help")) ? "/help" : "/index"; ?>">
+                        <img id="SHlogo" src="/graphics/en/logos/scapehouse_190px.png" alt="Scapehouse" title="Scapehouse Help Center" width="190" height="39" border="0" /></a>
+                    <?=(strstr($this->pageClass,"help")) ? "<span>Help Center</span>" : NULL; ?></h1>
+                <?php
+                if (Zend_Auth::getInstance()->hasIdentity()) {
+                    $session = Model_StaticFunctions::sessionContent();
+                    $session->username;
+
+                    echo <<<MARKUP
+   <div class="headerLinks"><a class="headerLink" href="/$session->username/home" class="UIButton grey headerLink"><span>Home</span></a>
+                    <a class="headerLink" href="/$session->username/profile" class="UIButton grey headerLink"><span>Profile</span></a>
+                    <a class="headerLink" href="/$session->username/watchlist" class="UIButton grey headerLink"><span>Watchlist</span></a>
+                    <a class="headerLink" href="/$session->username/notifs" class="UIButton grey headerLink"><span>Notifications</span></a>
+                    <a class="headerLink" href="/$session->username/console" class="UIButton grey headerLink"><span>Settings</span></a>
+                </div>
+MARKUP;
+                }
+                ?>
+
+            </div>
+            <div>
+                <div <?=(strstr($this->pageClass,"help")) ? "style='position:absolute; top: 80px;'" : "style='display:none;'"; ?> class="sidebar">
+                    <ul>
+                        <li><strong>Help Center Home</strong></li>
+                    </ul>
+                    <hr />
+                    <ul>
+                        <li><a href="/help/console">Settings</a></li>
+                        <li><a href="/help/photos">Photo Gallery</a></li>
+                        <li><a href="/help/profiles">Profiles</a></li>
+                        <li><a href="/help/scapes">Scapes</a></li>
+                        <li><a href="/help/watchlist">Watchlist</a></li>
+                        <li><a href="/help/noteboard">Noteboard</a></li>
+                        <li><a href="/help/scapes/emos">Emoticon Guide</a></li>
+                    </ul>
+                    <!--<hr />
+                    <ul>
+                        <li><a href="/help/privacy">Privacy @ Scapehouse</a></li>
+                    </ul> -->
+                    <hr />
+                    <ul>
+                        <!--<li><a href="#">Troubleshooting</a></li>-->
+                        <li><a href="/help/faqs">FAQs</a></li>
+                        <li><a href="/help/issues">Known Issues</a></li>
+                    </ul>
+                </div>
+                <?= $this->layout()->content;?>
+            </div>
+            <div>
+                <div id="footer">
+                    <span class="copyright">&copy; 2010 Scapehouse</span>
+                    <ul id="footerLinks">
+                        <li><a href="/about">About</a></li>
+                        <li><a href="/contact">Contact</a></li>
+                        <li><a href="/privacy">Privacy</a></li>
+                        <li><a href="/terms">Terms</a></li>
+                        <li><a href="/help">Help</a></li>
+                </div>
+            </div>
+    </body>
+</html>

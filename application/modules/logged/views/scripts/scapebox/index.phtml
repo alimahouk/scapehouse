@@ -1,0 +1,141 @@
+
+            <div class="popup editTags hidden">
+                    <h3>Tag people in this scape</h3><span class="cancelBtn">Cancel</span>
+                    <hr class="UIHSeparator" />
+                    <div class="setParam">
+                            <div class="list added">
+                                    <div class="item">
+                                            <span class="userName">Abdullah Khan</span><span class="removeBtn" title="Remove">X</span>
+                                    </div>
+                                    <div class="item">
+                                            <span class="userName">Adnan Hamadeh</span><span class="removeBtn" title="Remove">X</span>
+                                    </div>
+                            </div>
+                            <label for "limitToTags" class="labelFor limitToTags">
+                                    <input type="checkbox" class="UICheckbox" id="limitToTags" /> Limit this conversation to tagged people only
+                            </label>
+                            <input type="text" class="UITextInput" placeholder="Start typing to search..." />
+                            <ul class="suggestionsBox">
+                                    <li class="suggestion">
+                                            <h4 class="userName">Nizar Al-Sibai<span class="username">iCucumber</span></h4>
+                                    </li>
+                                    <li class="suggestion">
+                                            <h4 class="userName">Nigger Emily<span class="username">nigerette</span></h4>
+                                    </li>
+                            </ul>
+                    </div>
+                    <div class="UIPanel">
+                            <a href="#" class="UIButton large green save"><span class="UIButtonTxt">Save</span></a>
+                    </div>
+            </div>
+            <h2 id="pageTitle">Scapebox</h2>
+            <div id="timeline">
+                    <div class="UIToolbar">
+                            <span class="newTaggedScapes"><span class="newTaggedScapesCounterOuter"><span class="newTaggedScapesCounterInner"><?=$this->newScapeCount;?></span></span> new scapes about you</span>
+                            <div class="timelineFilters">
+                                    <a href="discussion_test.html" class="UIButton grey filter byOthers activeFilter"><span class="UIButtonTxt">By others</span></a>
+                                    <a href="discussion_test.html" class="UIButton grey filter byUser"><span class="UIButtonTxt">By me</span></a>
+                            </div>
+                    </div>
+                    <div class="timelineFeed">
+                        <?php
+                        $scapeProcessor = new Logged_Model_Timeline();
+                        foreach ($this->scapes as $scape){
+                             echo  $scapeProcessor->display($scape,"scapebox"); 
+                        }
+                        ?>
+                            <div class="timelineEntry scape taggedScape unread">
+                                    <div class="identification">
+                                            <a href="profile.html" class="userThmbnlSmall"><img src="/graphics/en/imgs/user_silhouette.gif" class="userThmbnlSmall" width="47" height="47" /></a>
+                                            <span class="userName entrySubject scapeAuthor"><a href="profile.html">Hossein<span class="nickname"> "Hassoon" </span>Hosseinzadeh</a></span>
+                                    </div>
+                                    <div class="entryBody">
+                                            <div class="scapeBodyTxt">
+                                                    <h2 class="postTitle"><a href="discussion_test.html">Shallow men believe in luck, strong men believe in cause and effect. ~ Ralph Waldo Emerson</a></h2>
+                                                    <p>Have you ever sat down in font of your computer and wondered "How does the Start menu come up when I click on it? How do the icons in the dock of a Mac grow bigger when I move my mouse over them? What programming language is Microsoft Office written in?". I'm here to give you some tips<span class="readMoreBtn">... <a href="discussion_test.html">Read more</a></span></p>
+                                            </div>
+                                            <table class="embeddedPhotos" border="0" cellspacing="0">
+                                                    <tbody>
+                                                            <tr>
+                                                                    <td><a class="thmbnlImg" href="photo.html"><img class="CGImage" src="http://upload.wikimedia.org/wikipedia/commons/c/c8/OpenPlanRedBalloon1.jpg" /></a></td>
+                                                                    <td><a class="thmbnlImg" href="photo.html"><img class="CGImage" src="http://www.google.com/images/logos/ps_logo2.png" /></a></td>
+                                                                    <td><a class="thmbnlImg" href="photo.html"><img class="CGImage" src="http://sphotos.ak.fbcdn.net/hphotos-ak-ash2/hs149.ash2/40777_1553214557079_1436629308_1477236_1324649_n.jpg" /></a></td>
+                                                            </tr>
+                                                    </tbody>
+                                            </table>
+                                            <span class="timestamp scape"><a href="discussion_test.html">February 24, 2010 at 12:42 pm</a></span> ⋅ <span class="UIIcon px16 watchlist privacyEffect" title="Privacy options have been set for this post."></span>
+                                            <div class="tags">
+                                                    <div class="storyFacemash">
+                                                            <div>
+                                                                    <a href="profile_other.html"><img class="thmbnl" src="/graphics/en/imgs/user_silhouette.gif" alt="Abdullah Khan" title="Abdullah Khan" /></a>
+                                                                    <a href="profile_other.html"><img class="thmbnl" src="/graphics/en/imgs/user_silhouette.gif" alt="Adnan Hamadeh" title="Adnan Hamadeh" /></a>
+                                                                    <a href="profile_other.html"><img class="thmbnl" src="/graphics/en/imgs/user_silhouette.gif" alt="Nizar Al-Sibai" title="Nizar Al-Sibai" /></a>
+                                                                    <a href="profile_other.html"><img class="thmbnl" src="/graphics/en/imgs/user_silhouette.gif" alt="Osama Bin Laden" title="Osama Bin Laden" /></a>
+                                                                    <a href="profile_other.html"><img class="thmbnl" src="/graphics/en/imgs/user_silhouette.gif" alt="Osama Bin Laden" title="Osama Bin Laden" /></a>
+                                                                    <a href="profile_other.html"><span class="tooltip top left"><span class="tooltipTxt">Abdullah Khan</span></span><img class="thmbnl" src="/graphics/en/imgs/user_silhouette.gif" alt="Osama Bin Laden" title="Osama Bin Laden" /></a>
+                                                            </div>
+                                                    </div>
+                                                    <div class="paperweight"></div>
+                                            </div>
+                                    </div>
+                                    <div class="userActions">
+                                            <span class="replyBtn"><a href="">Reply</a></span> ⋅ <span class="likeBtn"><a href="#">Like</a></span> ⋅ <span class="dislikeBtn"><a href="#">Dislike</a></span>
+                                    </div>
+                                    <div class="userOpinions">
+                                            <div class="likes">
+                                                    <span class="UIIcon px16 like"></span>
+                                                    <a href="profile_other.html">Adnan Hamadeh</a> likes this.
+                                            </div>
+                                            <div class="dislikes">
+                                                    <span class="UIIcon px16 dislike"></span>
+                                                    <a href="#"><span class="numberOfDislikes">2</span> people</a> don't like this.
+                                            </div>
+                                    </div>
+                                    <a class="replies" href="discussion_test.html">
+                                            <span class="UIIcon px16 reply"></span>See all <span class="numberOfReplies">4</span> replies.
+                                    </a>
+                            </div>
+                            <div class="timelineEntry scape taggedScape">
+                                    <div class="identification">
+                                            <a href="profile.html" class="userThmbnlSmall"><img src="/graphics/en/imgs/user_silhouette.gif" class="userThmbnlSmall" width="47" height="47" /></a>
+                                            <span class="userName entrySubject scapeAuthor"><a href="profile.html">Hossein<span class="nickname"> "Hassoon" </span>Hosseinzadeh</a></span>
+                                    </div>
+                                    <div class="entryBody">
+                                            <div class="scapeBodyTxt">
+                                                    <h2 class="postTitle"><a href="discussion_test.html">Shallow men believe in luck, strong men believe in cause and effect. ~ Ralph Waldo Emerson</a></h2>
+                                                    <p>Have you ever sat down in font of your computer and wondered "How does the Start menu come up when I click on it? How do the icons in the dock of a Mac grow bigger when I move my mouse over them? What programming language is Microsoft Office written in?". I'm here to give you some tips<span class="readMoreBtn">... <a href="discussion_test.html">Read more</a></span></p>
+                                            </div>
+                                            <span class="timestamp scape"><a href="discussion_test.html">February 24, 2010 at 12:42 pm</a></span> ⋅ <span class="UIIcon px16 watchlist privacyEffect" title="Privacy options have been set for this post."></span>
+                                            <div class="tags">
+                                                    <div class="storyFacemash">
+                                                            <div>
+                                                                    <a href="profile_other.html"><img class="thmbnl" src="/graphics/en/imgs/user_silhouette.gif" alt="Abdullah Khan" title="Abdullah Khan" /></a>
+                                                                    <a href="profile_other.html"><img class="thmbnl" src="/graphics/en/imgs/user_silhouette.gif" alt="Adnan Hamadeh" title="Adnan Hamadeh" /></a>
+                                                                    <a href="profile_other.html"><img class="thmbnl" src="/graphics/en/imgs/user_silhouette.gif" alt="Nizar Al-Sibai" title="Nizar Al-Sibai" /></a>
+                                                                    <a href="profile_other.html"><img class="thmbnl" src="/graphics/en/imgs/user_silhouette.gif" alt="Osama Bin Laden" title="Osama Bin Laden" /></a>
+                                                                    <a href="profile_other.html"><img class="thmbnl" src="/graphics/en/imgs/user_silhouette.gif" alt="Osama Bin Laden" title="Osama Bin Laden" /></a>
+                                                                    <a href="profile_other.html"><span class="tooltip top left"><span class="tooltipTxt">Abdullah Khan</span></span><img class="thmbnl" src="/graphics/en/imgs/user_silhouette.gif" alt="Osama Bin Laden" title="Osama Bin Laden" /></a>
+                                                            </div>
+                                                    </div>
+                                                    <div class="paperweight"></div>
+                                            </div>
+                                    </div>
+                                    <div class="userActions">
+                                            <span class="replyBtn"><a href="">Reply</a></span> ⋅ <span class="likeBtn"><a href="#">Like</a></span> ⋅ <span class="dislikeBtn"><a href="#">Dislike</a></span>
+                                    </div>
+                                    <div class="userOpinions">
+                                            <div class="likes">
+                                                    <span class="UIIcon px16 like"></span>
+                                                    <a href="profile_other.html">Adnan Hamadeh</a> likes this.
+                                            </div>
+                                            <div class="dislikes">
+                                                    <span class="UIIcon px16 dislike"></span>
+                                                    <a href="#"><span class="numberOfDislikes">2</span> people</a> don't like this.
+                                            </div>
+                                    </div>
+                                    <a class="replies" href="discussion_test.html">
+                                            <span class="UIIcon px16 reply"></span>See all <span class="numberOfReplies">4</span> replies.
+                                    </a>
+                            </div>
+            </div>
+            <a href="#" class="loadMoreBtn">Show more</a>

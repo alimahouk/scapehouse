@@ -1,0 +1,66 @@
+<?php $session = Model_StaticFunctions::sessionContent();
+$photo = new Logged_Model_Photo();
+?>
+<script>
+    $(document).ready(function(){
+        var section = $(location).attr('hash');
+        if(section == "#password"){
+         $('#changePassword').show();
+         $('#changeName').hide();
+         $('.active').removeClass('active');
+         $("#passwordSection").addClass('active');   
+        }
+    });
+</script>
+<h2 id="pageTitle">Settings<span class="UIBreadCrumb"><a href="/<?=$session->username?>/console">Settings Main Page</a>&nbsp;&raquo;&nbsp;<span class="currentLocation">Account</span></span></h2>
+<div class="info">
+    <div class="profileInfo">
+        <h2 class="userName"><?=$GLOBALS["session"]->fullname;?><span class="username">(<?=$GLOBALS["session"]->username;?>)</span></h2>
+        <div class="profilePic">
+            <a href="/<?=$GLOBALS["session"]->username;?>/home"><img class="profilePic" src="<?=$photo->display($GLOBALS["session"]->id,"user","med")?>" alt="Profile Picture" /></a>
+        </div>
+    </div>
+    <div class="options">
+        <div class="leftColumn">
+            <ul>
+                <li><a id="nameSection" class="active" onclick="$('#changePassword').hide();$('#changeName').show();$('.active').removeClass('active');$(this).addClass('active');">Change my name</a></li>
+                <li><a id="passwordSection" onclick="$('#changePassword').show();$('#changeName').hide();$('.active').removeClass('active');$(this).addClass('active');">Change my password</a></li>
+            </ul>
+        </div>
+        <div class="rightColumn">
+            <div class="UIView name" id="changeName">
+                <h3>Type in your new name</h3>
+                <form method="POST" action="/logged/console/account">
+                <label for="firstName">First name:
+                    <input type="text" class="UITextInput userName" id="firstName" name="firstname" value="<?=$GLOBALS["session"]->firstname;?>" />
+                </label>
+                <label for="lastName">Last name:
+                    <input type="text" class="UITextInput userName" id="lastName" name="lastname" value="<?=$GLOBALS["session"]->lastname;?>" />
+                </label>
+                <div class="errorSpace <?=($_GET["nameError"] != "true")?"hidden":NULL;?>">Invalid name</div>
+                <div class="UIPanel">
+                  <input type="submit" class="UIButton green save" value="Save">
+                </div>
+                </form>
+            </div>
+            <div class="UIView passwd hidden" id="changePassword">
+            <h3>Change your password</h3>
+            <form method="POST" action="/logged/console/account">
+                <label>Type in your current password:
+                    <input type="password" name="oldPassword" class="UITextInput originalPasswd" />
+                </label>
+                <label>Type in a new password:
+                    <input type="password" name="newPassword"  class="UITextInput newPasswd" />
+                </label>
+                <!--<label>Confirm your new password:
+                    <input type="text" class="UITextInput confirmNewPasswd" />
+                </label> -->
+                <div class="errorSpace <?=($_GET["passwordError"] != "true")?"hidden":NULL;?>">Incorrect password!</div>
+                <div class="UIPanel">
+                    <input type="submit" class="UIButton green save" value="Save">
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+</div>

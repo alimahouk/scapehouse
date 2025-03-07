@@ -1,0 +1,51 @@
+<?php
+
+$caption = $this->photo[0]['caption'];
+$location = $this->photo[0]['location'];
+$photoid = $this->photoid;
+
+?>
+
+        <div class="photoContainer"><p class="photoHolder"><img class="photo" id="photo" src="/logged/gallery/displayphoto?elmid=<?=$photoid;?>&idType=photo&size=640&quality=100" /></p></div>
+        <div class="caption"><?=$caption;?></div>
+        <div class="metadata">
+            <span class="uploadTimestamp">Uploaded March 15, 2010</span>
+            <dt class="location">Location:</dt><dd><?=$location;?></dd>
+        </div>
+    </div>
+    <div class="photoActions">
+        <h3>Actions</h3>
+        <div id="editDetails"><a href="photo_gallery.html">Edit details</a></div>
+        <div id="makeProfilePic"><a href="photo_gallery.html">Use as profile picture</a></div>
+        <div id="deletePhoto"><a href="profile_editing_mod.html">Delete this photo</a></div>
+        <div id="sharePhoto"><a href="watchlist.html">Share</a></div>
+        <div id="reportPhoto"><a href="watchlist.html">Report this photo</a></div>
+    </div>
+    <div class="photoNaviControls">
+        <div class="nextBtn"></div>
+        <div class="previousBtn"></div>
+    </div>
+    <div class="userOpinions">
+        <div class="likes">
+            <a href="#"><span class="numberOfLikes">Adnan Hamadeh</span></a> likes this.
+        </div>
+        <div class="dislikes">
+            <a href="#"><span class="numberOfDislikes">2</span> people</a> don't like this.
+        </div>
+    </div>
+    <div class="userActions">
+        <span class="commentBtn">Comment</span> ⋅ <span class="likeBtn"><a href="#">Like</a></span> ⋅ <span class="dislikeBtn"><a href="#">Dislike</a></span>
+    </div>
+    <div class="showAllCommentsBtn">
+        <a href="#">Show all <span class="commentCount">5</span> comments.</a>
+    </div>
+    <div class="bubbleArrowUp"></div>
+    <div class="commentBox">
+        <div class="minipublisher">
+            <div id="minieditor" class="minieditor"></div>
+        </div>
+        <div class="postCommentBtn">
+            <a href="#" class="UIButton green post"><span>Comment</span></a>
+        </div>
+    </div>
+</div>

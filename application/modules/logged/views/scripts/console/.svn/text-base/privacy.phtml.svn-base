@@ -1,0 +1,160 @@
+<?php $session = Model_StaticFunctions::sessionContent();
+
+$privacy = new Logged_Model_DbTable_PrivacyGlobal();
+$privacy = $privacy->getPrivacy($session->id);
+
+function displaySelectOptions($detail,$detailName) {
+    $editBtnHidden = "hidden";
+    $session = Model_StaticFunctions::sessionContent();
+
+    switch($detail) {
+        case 0:
+            $selectNoOne = "selected";
+            break;
+        case 1:
+            $selectEveryone = "selected";
+            break;
+        case 3:
+            $watchersOnly = "<option class='watchersOnly' value='3' selected>Watchers only</option>";
+            break;
+    }
+
+    $privacyCustomTable = new Logged_Model_DbTable_PrivacyCustom();
+
+    if($privacyCustomTable->hasPrivacy($session->id, $detailName)) {
+        $selectSpecific = "selected";
+        $editBtnHidden = "";
+    }
+
+    return "
+    <select id='{$detailName}' name='{$detailName}'>
+        <option value='1' {$selectEveryone}>Everyone</option>
+        <option value='2' {$selectSpecific}>Specific people</option>
+        <option value='0' {$selectNoOne}>no one (only me)</option>
+        {$watchersOnly}
+    </select><a id='{$detailName}EditBtn' class='editPrivacyEntriesBtn {$editBtnHidden}' onclick='showFilter(\"$detailName\");'>&raquo;&nbsp;Edit</a>
+            ";
+}
+?>
+<!-- Selection markup -->
+
+<script> $(document).ready(function(){O.searchSuggestions.create();}); </script>
+<!--<div class="feedbackMsg negative">An error occurred.</div>-->
+
+<div class="popup privacyFilters hidden" id="privacyFilters">
+    <h3><span class="detailName" id="detailName"></span></h3><span onclick="$('#privacyList').html('');$('#privacyFilters').fadeOut();$('#pageOverlay').hide();" class="cancelBtn">Cancel</span>
+    <hr class="UIHSeparator" />
+    <p>Type in their names, then choose the matches from the suggestions that appear. <br /><em>To find people who are not your watchers search by username (type an "@" before it) or Email</em>:</p>
+    <div class="method">
+       <!-- <label for="radio_hideFrom">
+            <input type="radio" id="radio_hideFrom" name="methods" value="1" onclick="($(this).is(':checked'))?$('#privacyListHeading').html('Hide from these people'):null;" <?=($privacy["maxPrivacy"]==1)?NULL:"disabled";?>/>Hide from certain people <span class="explanation">(will be visible to everyone else)</span>
+        </label>
+        <label for="radio_showTo">
+            <input type="radio" id="radio_showTo" name="methods" value="1"  onclick="($(this).is(':checked'))?$('#privacyListHeading').html('Only show these people'):null;" checked="checked"/>Show to certain people <span class="explanation">(will be hidden from everyone else)</span>
+        </label> -->
+    </div>
+    <div class="setParam">
+        <h4 id="privacyListHeading">Only show these people</h4>
+        <div class="list added" id="privacyList"></div>
+        <input type="text" spellcheck="false" autocomplete="off"  id="privacySearchInput" class="UITextInput" placeholder="Start typing to search..." />
+        <ul class="suggestionsBox hidden" id="privacySearchSuggestions"></ul>
+    </div>
+    <div class="UIPanel">
+        <a onclick="save($('#privacyFilters').attr('type'));$('#privacyFilters').fadeOut();$('#pageOverlay').hide();" class="UIButton green save"><span>Save</span></a>
+    </div>
+</div>
+<!-- Selection markup -->
+
+
+<h2 id="pageTitle">Settings<span class="UIBreadCrumb"><a href="/<?=$session->username?>/console">Settings Main Page</a>&nbsp;&raquo;&nbsp;<span class="currentLocation">Privacy</span></span></h2>
+<div class="info">
+    <div class="attention">Changes won't be saved unless you click on <strong>"Save Changes"</strong> at the bottom.</div>
+    <form id="privacySettings" action="/<?=$session->username;?>/console/privacy?saved=1" method="POST">
+        <h3>Profile details <em>(who can see them?)</em></h3>
+        <hr />
+        <div class="section profileDetails">
+            <ul>
+                <li class="info general">
+                    <h4><span>General Info</span>
+                        <?= displaySelectOptions($privacy["genInfo"],"genInfo")?>
+                    </h4>
+                </li>
+                <li class="info contact">
+                    <h4><span>Contact Info</span>
+                        <?= displaySelectOptions($privacy["conInfo"],"conInfo")?>
+                    </h4>
+                </li>
+                <li class="info personal">
+                    <h4><span>Personal Info</span>
+                        <?= displaySelectOptions($privacy["perInfo"],"perInfo")?>
+                    </h4>
+                </li>
+                <li class="info education">
+                    <h4><span>Education info</span>
+                        <?= displaySelectOptions($privacy["eduInfo"],"eduInfo")?>
+                    </h4>
+                </li>
+                <li class="info work">
+                    <h4><span>Work info</span>
+                        <?= displaySelectOptions($privacy["workInfo"],"workInfo")?>
+                    </h4>
+                </li>
+            </ul>
+        </div>
+        <h3>Profile Pictures</h3>
+        <hr />
+        <div class="section profilePics">
+            <dt>Who can see your photo gallery?</dt>
+            <dd>
+                <?= displaySelectOptions($privacy["gallery"],"gallery")?>
+            </dd>
+        </div>
+ <!--       <h3>Scapes</h3>
+        <hr />
+        <div class="section scapes">
+            <dt>Who can see the scapes you publish?</dt>
+            <dd>
+                <?= displaySelectOptions($privacy["scape"],"scape")?>
+            </dd>
+        </div> -->
+        <!-- <h3>Block List</h3>
+         <hr />
+         <div class="section blockList">
+             <dt>Manage your list of blocked people</dt>
+             <dd>
+                 <a href="control_console_blocklist.html">&raquo;&nbsp;Edit my block list</a>
+             </dd>
+         </div> -->
+ <!--       <h3 class="fullProtection">Maximum Privacy</h3>
+        <hr />
+        <div class="section fullProtection">
+            <input class="UICheckbox" type="checkbox" name="maxPrivacy" id="maxPrivacy" value="1" <?=($privacy["maxPrivacy"]==1)?"checked":NULL;?>/>Fully protect my account
+            <div>
+                <div class="warning fullProtection hidden" id="warning">
+                    <h3>Are you sure you want to turn off Maximum Privacy?</h3>
+                    <p>Content that you have hidden from specific people will no longer be hidden.</p>
+                    <p>If you're sure, go ahead and click <strong>"Save Changes"</strong> at the bottom</p>
+                </div>
+
+                <p><strong>This is the default behavior (you can customize it using the settings in the above sections):</strong></p>
+                <ul class="description">
+                    <li>People who want to watch you will have to send you a request (they can't see your scapes unless you accept their request)</li>
+                    <li>People who are not watching you can't see your photo gallery (only your current profile picture will be visible)</li>
+                    <li>People who are not watching you can only see minimal profile details (like your name)</li>
+                </ul>
+                <p>Once you accept someone's request, that person will be able to see your scapes, photos, and profile details according to the settings you specify in the above sections.</p>
+                <p><strong>Features:</strong></p>
+                <ul class="description">
+                    <li>Hide content from specific people</li>
+                    <li>"Watchers only" option</li>
+                </ul>
+                <br />
+                <em>Note: Turning off Maximum Privacy deactvicates these features.</em>
+            </div>
+            <hr />
+        </div>-->
+        <br />
+        <hr />
+     <div class="UIPanel" style="margin-top: 10px;"><input type="submit" class="UIButton large green save" value="Save Changes" /></div>
+    </form>
+</div>

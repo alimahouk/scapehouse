@@ -1,0 +1,63 @@
+<?php
+$photo = new Logged_Model_Photo();
+$likes = $this->likes;
+$dislikes = $this->dislikes;
+
+$userTable = new Model_DbTable_Users();
+
+unset($watchStatus);
+
+switch(true) {
+    case($likes):
+        $likesDislikes = $likes;
+        $text = "likes this.";
+        $idPrefix = "L";
+        break;
+    case($dislikes):
+        $likesDislikes = $dislikes;
+        $text = "doesn't like this";
+        $idPrefix = "D";
+        break;
+}
+
+$session = Model_StaticFunctions::sessionContent();
+
+$watchlistTable = new Logged_Model_DbTable_Watchlist();
+$watching = $watchlistTable->getAllTargetIds();
+
+foreach ($likesDislikes as $likeDislike) {
+
+    $user = $userTable->getUserById($likeDislike['userid']);
+    $userName = $user['fullname'];
+    $userid = $likeDislike['userid'];
+    $username = $user['username'];
+    $id = $likeDislike['id'];
+    
+        if(in_array($userid, $watching)){
+            $watchStatus = "<div class=\"watch\"><div class=\"watchStatus\"><span class=\"UIIcon px16 tick\"></span>Watching</div></div>";
+        } else {             
+            $watchStatus = <<<MARKUP
+
+            <div class="watch watchOptions">
+            <div class="UIButton grey watch" onclick="ajaxWatch('$id','$userid','likeDislikeWindow');" title="Add this person to your watchlist"><a><span class="UIIcon px16 watchlist"></span>Watch</a></div>
+                </div>
+MARKUP;
+
+        }
+    
+
+    echo <<<MARKUP
+    <div class="likeDislike" id="$idPrefix$id">
+    $watchStatus
+    <div class="userPicture"><a href="/$username/profile"><img src="{$photo->display($userid, "user", "small")}" class="authorThmbnlSmall" alt="$userName" /></a></div>
+    <h4 class="userName"><a href="/$username/profile">$userName</a><span>$text</span></h4>
+</div>
+MARKUP;
+
+    
+}
+
+
+?>
+
+

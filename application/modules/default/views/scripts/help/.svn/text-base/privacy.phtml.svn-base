@@ -1,0 +1,21 @@
+<div class="mainWrapper">
+    <h3>Privacy @ Scapehouse</h3>
+    <p>You have four options to configure your privacy:</p>
+    <ol>
+        <li>Allow everyone to see this detail.</li>
+        <li>Only allow specific people to see this detail.</li>
+        <li>Only you can see this detail.</li>
+        <li>Only your watchers can see this detail.</li>
+    </ol>
+    <dt><strong>Option 1:</strong> Everyone (public)</dt>
+    <dd>The option's name says it all. Everyone will be able to see this detail. Note that unregistered Scapehouse users won't be able to see your profile details (only a max. of 3 basic details) or your photos, even if you set the privacy level to "Everyone". They can, however, see your scapes if you use this option.</dd>
+    <dt><strong>Option 2:</strong> Specific people</dt>
+    <dd>This option allows you to add a filters to a detail: You can choose to only allow specific people to see it (it will be hidden from everyone else), or you can choose to only hide it from specific people (it will be visible to everyone else). To hide from specific people you will need to activate Maximum Privacy.</dd>
+    <dt><strong>Option 3:</strong> No one (only me)</dt>
+    <dd>This option hides a detail from everyone, and only you will be able to see it.</dd>
+    <dt><strong>Option 4:</strong> Watchers only</dt>
+    <dd>This option hides a detail from anyone who is not watching you. To show only to watchers you will need to activate Maximum Privacy </dd>
+
+    <p>For users who want an extra level of privacy, we provide a Maximum Privacy option, which virually raises a wall around your account, people who want to watch you will have to send you a request, rest of the privacy can be controlled using the options mentioned above</p>
+    <p>Always remember to click the "Save Changes" button at the bottom of the page when you're done, otherwise your changes will be lost.</p>
+</div>

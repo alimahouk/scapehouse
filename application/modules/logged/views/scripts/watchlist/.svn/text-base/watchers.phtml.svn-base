@@ -1,0 +1,163 @@
+<script>
+$(document).ready(function(){
+
+    var interval = 500;
+    var filterValue = "";
+
+    $("#watchlistSearchBox").bind("keypress", logKeyPress);
+
+    function logKeyPress() {
+        var now = new Date().getTime();
+        var lastTime = this._keyPressedAt || now;
+        this._keyPressedAt = now;
+        if (!this._monitoringSearch) {
+            this._monitoringSearch = true;
+            var input = this;
+            window.setTimeout(
+                function() {
+                    search(input);
+                }, 0);
+        }
+    }
+    function search(input) {
+        var now = new Date().getTime();
+        var lastTime = input._keyPressedAt;
+        if ((now - lastTime) > interval) {
+            if (input.value != filterValue) {
+                filterValue = input.value;
+                ajaxWatchlistSearch($("#watchlistSearchBox").val(),"<?=$this->user["id"];?>","watchers");
+            }
+            input._monitoringSearch = false;
+        }
+        else {
+            window.setTimeout(
+                function() {
+                    search(input);
+                }, 0);
+        }
+    }
+});
+</script>
+<?php
+
+$session = Model_StaticFunctions::sessionContent();
+?>
+<h2 id="pageTitle"><?php echo($this->user["id"] == $session->id)?"My":$this->user["firstname"]."'s"; ?> Watchlist<a href="/<?=$this->user["username"];?>/profile">&laquo;&nbsp;Back to profile</a></h2>
+<div class="topPanel">
+    <div class="counters">
+        <ul>
+            <?php
+            $watchlistTable = new Logged_Model_DbTable_Watchlist();
+            $count = count($watchlistTable->getWatching($this->user["id"]));
+
+            if ($count == 1) {
+
+                if($this->user["id"] == $session->id) {
+
+                    echo <<<MARKUP
+<li id="userWatchingCounter">You're watching <span id="userWatchingCounterSpan">$count</span> person.</li>
+MARKUP;
+
+                } else {
+
+                    echo <<<MARKUP
+<li id="userWatchingCounter">{$this->user["firstname"]}'s watching <span id="userWatchingCounterSpan">$count</span> person.</li>
+MARKUP;
+
+                }
+            }
+
+            else {
+                if($this->user["id"] == $session->id) {
+
+                    echo <<<MARKUP
+<li id="userWatchingCounter">You're watching <span id="userWatchingCounterSpan">$count</span> people.</li>
+MARKUP;
+                } else {
+                    echo <<<MARKUP
+<li id="userWatchingCounter">{$this->user["firstname"]}'s watching <span id="userWatchingCounterSpan">$count</span> people.</li>
+MARKUP;
+                }
+
+            }
+
+            $count = count($watchlistTable->getWatchers($this->user["id"]));
+
+            if ($count == 1) {
+
+                if($this->user["id"] == $session->id) {
+
+                    echo <<<MARKUP
+<li id="watchingUserCounter"><span id="watchingUserCounterSpan">$count</span> person is watching you.</li>
+MARKUP;
+                }else {
+                    echo <<<MARKUP
+<li id="watchingUserCounter"><span id="watchingUserCounterSpan">$count</span> person is watching {$this->user["firstname"]}.</li>
+MARKUP;
+                }
+
+            } else {
+                if($this->user["id"] == $session->id) {
+
+                    echo <<<MARKUP
+<li id="watchingUserCounter"><span id="watchingUserCounterSpan">$count</span> people are watching you.</li>
+MARKUP;
+
+                } else {
+                    echo <<<MARKUP
+<li id="watchingUserCounter"><span id="watchingUserCounterSpan">$count</span> people are watching {$this->user["firstname"]}.</li>
+MARKUP;
+                }
+            }
+
+            ?>
+        </ul>
+    </div>
+
+    <div class="contentFilters">
+        <a href="/<?=$this->user["username"];?>/watchlist/watching"><?php echo($this->user["id"] == $session->id)?"People I'm watching":"Watching"; ?></a>&nbsp;|&nbsp;<span class="activeFilter"><?php echo($this->user["id"] == $session->id)?"People watching me":"Watchers"; ?></span>
+    </div>
+</div>
+<script>
+    ajaxDisplayWatchlst('watching',<?=$this->user["id"]?>,'<?=$this->user["fullname"];?>',<?php echo($this->user["id"] == $session->id)?"true":"false"; ?>);</script>
+<div id="watchlist">
+    <div class="watchlistSearch hidden">
+        <input type="text" class="UITextInput searchBox" id="watchlistSearchBox" title="Watchlist Search" placeholder="Watchlist Search" />
+        <div class="numberOfMatches"></div>
+    </div>
+    <div id="watchlistResults">
+    <?php
+
+    $watchlistProcessor = new Logged_Model_Watchlist();
+    $watchlistProcessor->watchers = 1;
+    $watchers = $watchlistTable->getWatchers($this->user["id"]);
+    if($watchers) {
+        foreach($watchers as $watch) {
+            echo $watchlistProcessor->display($watch);
+        }
+    }
+
+    if(!$watchers) {
+        if($this->user["id"] == $session->id){
+            
+        echo "<div class=\"noWatchers\">
+		<h3>Nobody's watching you yet.</h3>
+		</div>";               
+        }else{
+            
+        echo "<div class=\"noWatchers\">
+		<h3>Nobody's watching {$this->user["firstname"]} yet.</h3>
+		</div>";            
+        }
+
+    }
+
+    ?>
+    <div class="pagination hidden">
+        <div class="controlBox">
+                <a href="#" class="UIButton large grey previousBtn"><span class="UIButtonTxt">&laquo;&nbsp;Previous</span></a>
+                <a href="#" class="UIButton large grey nextBtn"><span class="UIButtonTxt">Next&nbsp;&raquo;</span></a>
+        </div>
+     </div>
+  </div>
+</div>

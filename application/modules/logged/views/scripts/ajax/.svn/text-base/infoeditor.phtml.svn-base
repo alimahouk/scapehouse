@@ -1,0 +1,392 @@
+<?php
+$profileSingleTable = new Logged_Model_DbTable_ProfileSingle();
+$profileInfo = $profileSingleTable->profileDisplay($this->profileOwnerid);
+
+$profileMultiTable = new Logged_Model_DbTable_ProfileMulti();
+$profileInfosMulti = $profileMultiTable->profileDisplay($this->profileOwnerid);
+
+$session = Model_StaticFunctions::sessionContent();
+
+//print_r($profileInfosMulti);
+// Multi details --
+foreach ($profileInfosMulti as $profileInfoMulti) {
+
+    if($profileInfoMulti["type"] == "book") {
+        $booksMarkup .= "<dd>".$profileInfoMulti['data']."</dd>";
+        $books[$profileInfoMulti['id']] = $profileInfoMulti['data'];
+    }
+    if($profileInfoMulti["type"] == "show") {
+        $showsMarkup .= "<dd>".$profileInfoMulti['data']."</dd>";
+        $shows[$profileInfoMulti['id']] = $profileInfoMulti['data'];
+    }
+    if($profileInfoMulti["type"] == "movie") {
+        $moviesMarkup .= "<dd>".$profileInfoMulti['data']."</dd>";
+        $movies[$profileInfoMulti['id']] = $profileInfoMulti['data'];
+    }
+    if($profileInfoMulti["type"] == "game") {
+        $gamesMarkup .= "<dd>".$profileInfoMulti['data']."</dd>";
+        $games[$profileInfoMulti['id']] = $profileInfoMulti['data'];
+    }
+    if($profileInfoMulti["type"] == "interest") {
+        $interestsMarkup .= "<dd>".$profileInfoMulti['data']."</dd>";
+        $interests[$profileInfoMulti['id']] = $profileInfoMulti['data'];
+    }
+    if($profileInfoMulti["type"] == "need") {
+        $needsMarkup .= "<dd>".$profileInfoMulti['data']."</dd>";
+        $needs[$profileInfoMulti['id']] = $profileInfoMulti['data'];
+    }
+    if($profileInfoMulti["type"] == "mobno") {
+        $mobnosMarkup .= "<dd>".$profileInfoMulti['data']."</dd>";
+        $mobnos[$profileInfoMulti['id']] = $profileInfoMulti['data'];
+    }
+    if($profileInfoMulti["type"] == "fax") {
+        $faxsMarkup .= "<dd>".$profileInfoMulti['data']."</dd>";
+        $faxs[$profileInfoMulti['id']] = $profileInfoMulti['data'];
+    }
+    if($profileInfoMulti["type"] == "homeno") {
+        $homenosMarkup .= "<dd>".$profileInfoMulti['data']."</dd>";
+        $homenos[$profileInfoMulti['id']] = $profileInfoMulti['data'];
+    }
+    if($profileInfoMulti["type"] == "officeno") {
+        $officenosMarkup .= "<dd>".$profileInfoMulti['data']."</dd>";
+        $officenos[$profileInfoMulti['id']] = $profileInfoMulti['data'];
+    }
+    if($profileInfoMulti["type"] == "bb") {
+        $bbsMarkup .= "<dd>".$profileInfoMulti['data']."</dd>";
+        $bbs[$profileInfoMulti['id']] = $profileInfoMulti['data'];
+    }
+    if($profileInfoMulti["type"] == "website") {
+        $websitesMarkup .= (preg_match("/http:\/\//", strtolower($profileInfoMulti['data'])))?'<dd><a target="_blank" href="'.strtolower($profileInfoMulti['data']).'">'.strtolower($profileInfoMulti['data']).'</a></dd>':'<dd><a target="_blank" href="http://'.strtolower($profileInfoMulti['data']).'">http://'.strtolower($profileInfoMulti['data']).'</a></dd>';
+        $websites[$profileInfoMulti['id']] = $profileInfoMulti['data'];
+    }
+    if($profileInfoMulti["type"] == "email") {
+        $emailsMarkup .= "<dd>".$profileInfoMulti['data']."</dd>";
+        $emails[$profileInfoMulti['id']] = $profileInfoMulti['data'];
+    }
+    // -- IMs
+    if($profileInfoMulti["type"] == "aim") {
+        $imsMarkup .= "<dd>".$profileInfoMulti['data']."<span class=\"infoDescription aim\">(AIM)</span></dd>";
+        $ims[$profileInfoMulti['id']] = $profileInfoMulti['data'];
+        $imType['typeid'.$profileInfoMulti['id']] = $profileInfoMulti['type'];
+    }
+    if($profileInfoMulti["type"] == "gtalk") {
+        $imsMarkup .= "<dd>".$profileInfoMulti['data']."<span class=\"infoDescription gtalk\">(Google Talk)</span></dd>";
+        $ims[$profileInfoMulti['id']] = $profileInfoMulti['data'];
+        $imType['typeid'.$profileInfoMulti['id']] = $profileInfoMulti['type'];
+    }
+    if($profileInfoMulti["type"] == "icq") {
+        $imsMarkup .= "<dd>".$profileInfoMulti['data']."<span class=\"infoDescription icq\">(ICQ)</span></dd>";
+        $ims[$profileInfoMulti['id']] = $profileInfoMulti['data'];
+        $imType['typeid'.$profileInfoMulti['id']] = $profileInfoMulti['type'];
+    }
+    if($profileInfoMulti["type"] == "msn") {
+        $imsMarkup .= "<dd>".$profileInfoMulti['data']."<span class=\"infoDescription msn\">(MSN)</span></dd>";
+        $ims[$profileInfoMulti['id']] = $profileInfoMulti['data'];
+        $imType['typeid'.$profileInfoMulti['id']] = $profileInfoMulti['type'];
+    }
+    if($profileInfoMulti["type"] == "skype") {
+        $imsMarkup .= "<dd>".$profileInfoMulti['data']."<span class=\"infoDescription skype\">(Skype)</span></dd>";
+        $ims[$profileInfoMulti['id']] = $profileInfoMulti['data'];
+        $imType['typeid'.$profileInfoMulti['id']] = $profileInfoMulti['type'];
+    }
+    if($profileInfoMulti["type"] == "yahoo") {
+        $imsMarkup .= "<dd>".$profileInfoMulti['data']."<span class=\"infoDescription yahoo\">(Yahoo!)</span></dd>";
+        $ims[$profileInfoMulti['id']] = $profileInfoMulti['data'];
+        $imType['typeid'.$profileInfoMulti['id']] = $profileInfoMulti['type'];
+    }
+    if($profileInfoMulti["type"] == "other") {
+        $imsMarkup .= "<dd>".$profileInfoMulti['data']."<span class=\"infoDescription\">(other)</span></dd>";
+        $ims[$profileInfoMulti['id']] = $profileInfoMulti['data'];
+        $imType['typeid'.$profileInfoMulti['id']] = $profileInfoMulti['type'];
+    }
+}
+// Multi details end--
+
+
+// Single details ---
+$age = strtotime("now")-strtotime($profileInfo["bday"]);
+$age = date("Y",$age)-1970;
+
+$location = ($profileInfo["location"]) ? "<dt>Location:</dt><dd>".$profileInfo["location"]."</dd>" : NULL;
+$sex = ($profileInfo["sex"]) ? "<dt>Sex:</dt><dd>".$profileInfo["sex"]."</dd>" : NULL;
+$bday = ($profileInfo["bday"]) ? "<dt>Birthday:</dt><dd>".date("F j, Y",strtotime($profileInfo["bday"]))."<span class=\"userAge\">- $age years old</span></dd>" : NULL;
+$aboutme = ($profileInfo["aboutme"]) ? "<dt>Bio:</dt><dd id=\"about\">".$profileInfo["aboutme"]."</dd>" : NULL;
+$school = ($profileInfo["school"]) ? "<dt>High School:</dt><dd>".$profileInfo["school"]."</dd>" : NULL;
+$collage = ($profileInfo["collage"]) ? "<dt>College/University:</dt><dd>".$profileInfo["collage"]."</dd>" : NULL;
+$major = ($profileInfo["major"]) ? "<dt>Major:</dt><dd>".$profileInfo["major"]."</dd>" : NULL;
+$company = ($profileInfo["company"]) ? "<dt>Company:</dt><dd>".$profileInfo["company"]."</dd>" : NULL;
+$workPosition = ($profileInfo["workposition"]) ? "<dt>Position:</dt><dd>".$profileInfo["workposition"]."</dd>" : NULL;
+$workSince = ($profileInfo["worksince"]) ? "<dt>Working there since:</dt><dd>".date("F Y",strtotime($profileInfo["worksince"]))."</dd>" : NULL;
+$workAbout = ($profileInfo["workabout"]) ? "<dt>Company description:</dt><dd>".$profileInfo["workabout"]."</dd>" : NULL;
+// Single details end---
+?>
+<?=($session->id == $this->profileOwnerid)?"<a href='/$session->username/console/privacy' class='privacySettingsBtn hidden'>Who can see these?</a>":NULL;?>
+<div id="editingTip">Click "Done" at the bottom to save your changes.<br /><strong>Tip: </strong>To remove a detail, just empty its text box.</div>
+<div class="basicInfoContainer">
+    <h3>General Info</h3>
+    <dt>Location:</dt><dd><input type="text" name="location" class="UITextInput" value="<?=$profileInfo["location"];?>" /></dd>
+    <dt>Nickname:</dt><dd><input type="text" name="nickname" class="UITextInput" value="<?=$profileInfo["nickname"];?>"/></dd>
+    <dt>Sex:</dt><dd><select name="sex"><option <?=($profileInfo["sex"]=="Male")?"selected":NULL;?> value="Male">Male</option><option <?=($profileInfo["sex"]=="Female")?"selected":NULL;?> value="Female">Female</option></select></dd>
+    <dt>Birthday:</dt>
+    <dd>
+        <select  class="days" name="bday">
+            <option value="">Day:</option>
+            <?php
+            $b = 0;
+            while ($b <= 31) {
+
+                if($profileInfo["bday"]) {
+                    $selected = (date("j",strtotime($profileInfo["bday"])) == $b) ? "selected" : NULL;
+                }
+                echo "<option $selected value=\"$b\">$b</option>";
+                $b++;
+            }
+            ?>
+        </select>
+        <select class="months" name="bmonth">
+            <option value="">Month:</option>
+            <?php
+            $months = array("January","February","March","April","May","June","July","August","September","October","November","December");
+            foreach($months as $key => $month) {
+                $key++;
+                if($profileInfo["bday"]) {
+                    $selected = (date("F",strtotime($profileInfo["bday"])) == $month) ? "selected" : NULL;
+                }
+                echo "<option $selected value=\"$key\">$month</option>";
+
+            }
+            ?>
+        </select>
+        <select class="years" name="byear">
+            <option value="">Year:</option>
+            <?php
+            $i = 2009;
+            while ($i > 1900) {
+                if($profileInfo["bday"]) {
+                    $selected = (date("Y",strtotime($profileInfo["bday"])) == $i) ? "selected" : NULL;
+                }
+                echo "<option $selected value=\"$i\">$i</option>";
+                $i--;
+            }
+            ?>
+
+        </select>
+
+    </dd>
+</div>
+
+<div class="personalInfoContainer">
+    <h3>Personal Info</h3>
+
+    <dt>Something about me:</dt><dd id="about"><textarea name="aboutme" ><?=$profileInfo["aboutme"];?></textarea></dd>
+
+    <dt>Favorite books:</dt>
+    <div id="book">
+        <?php if($books)foreach($books as $id => $book) {
+                echo "<dd><input name=\"$id\" type=\"text\" class=\"UITextInput book\" onkeyup=\"addToggle('book')\" value=\"$book\" /></dd>";
+            } ?>
+        <dd><input type="text" class="UITextInput book" name="book[]" value="" onkeyup="addToggle('book')" /><span id="addbook" class="addDetail unavailable">Add</span></dd>
+    </div>
+    <hr class="UIHSeparator" />
+
+    <dt>Favorite TV shows:</dt>
+    <div id="show">
+        <?php if($shows)foreach($shows as $id => $show) {
+                echo "<dd><input name=\"$id\" type=\"text\" class=\"UITextInput show\" onkeyup=\"addToggle('show')\" value=\"$show\" /></dd>";
+            } ?>
+        <dd><input type="text" class="UITextInput show" name="show[]" value="" onkeyup="addToggle('show')" /><span id="addshow" class="addDetail unavailable">Add</span></dd>
+    </div>
+    <hr class="UIHSeparator" />
+
+    <dt>Favorite movies:</dt>
+    <div id="movie">
+        <?php if($movies)foreach($movies as $id => $movie) {
+                echo "<dd><input name=\"$id\" type=\"text\" class=\"UITextInput movie\" onkeyup=\"addToggle('movie')\" value=\"$movie\" /></dd>";
+            } ?>
+        <dd><input type="text" class="UITextInput movie" name="movie[]" value="" onkeyup="addToggle('movie')" /><span id="addmovie" class="addDetail unavailable">Add</span></dd>
+    </div>
+    <hr class="UIHSeparator" />
+    <dt>Favorite games:</dt>
+    <div id="game">
+        <?php if($games)foreach($games as $id => $game) {
+                echo "<dd><input name=\"$id\" type=\"text\" class=\"UITextInput game\" onkeyup=\"addToggle('game')\" value=\"$game\" /></dd>";
+            } ?>
+        <dd><input type="text" class="UITextInput game" name="game[]" value="" onkeyup="addToggle('game')" /><span id="addgame" class="addDetail unavailable">Add</span></dd>
+    </div>
+    <hr class="UIHSeparator" />
+    <dt>Interests:</dt>
+    <div id="interest">
+        <?php if($interests)foreach($interests as $id => $interest) {
+                echo "<dd><input name=\"$id\" type=\"text\" class=\"UITextInput interest\" onkeyup=\"addToggle('interest')\" value=\"$interest\" /></dd>";
+            } ?>
+        <dd><input type="text" class="UITextInput interest" name="interest[]" value="" onkeyup="addToggle('interest')" /><span id="addinterest" class="addDetail unavailable">Add</span></dd>
+    </div>
+    <hr class="UIHSeparator" />
+    <dt>Things I can't live without:</dt>
+    <div id="need">
+        <?php if($needs)foreach($needs as $id => $need) {
+                echo "<dd><input name=\"$id\" type=\"text\" class=\"UITextInput need\" onkeyup=\"addToggle('need')\" value=\"$need\" /></dd>";
+            } ?>
+        <dd><input type="text" class="UITextInput need" name="need[]" value="" onkeyup="addToggle('need')" /><span id="addneed" class="addDetail unavailable">Add</span></dd>
+    </div>
+</div>
+<div class="contactInfoContainer">
+    <h3>Contact Info</h3>
+    <dt>Email:</dt>
+    <div id="email">
+        <?php if($emails)foreach($emails as $id => $email) {
+                echo "<dd><input name=\"$id\" type=\"text\" class=\"UITextInput need\" onkeyup=\"addToggle('need')\" value=\"$email\" /></dd>";
+            } ?>
+        <dd><input type="text" class="UITextInput email" name="email[]"  onkeyup="addToggle('email');" /><span id="addemail" class="addDetail unavailable" >Add</span></dd>
+    </div>
+
+    <dt>IM:</dt>
+    <div id="im">
+        <?php
+
+        if($ims)foreach($ims as $id => $im) {
+                $type = $imType["typeid$id"];
+
+                switch ($type) {
+                    case 'aim':
+                        $aim = "selected";
+                        break;
+                    case 'gtalk':
+                        $gtalk = "selected";
+                        break;
+                    case 'icq':
+                        $icq = "selected";
+                        break;
+                    case 'msn':
+                        $msn = "selected";
+                        break;
+                    case 'skype':
+                        $skype = "selected";
+                        break;
+                    case 'yahoo':
+                        $yahoo = "selected";
+                        break;
+                    case 'other':
+                        $other = "selected";
+                        break;
+                }
+                echo "<dd style=\"width: 390px;\"><input name=\"im".$id."[]\" type=\"text\" class=\"UITextInput im\" onkeyup=\"addToggle('im')\" value=\"$im\" />
+                            <select name=\"im".$id."[]\">
+                                <option $aim value=\"aim\">AIM</option>
+                                <option $gtalk value=\"gtalk\">Google Talk</option>
+                                <option $icq value=\"icq\">ICQ</option>
+                                <option $msn value=\"msn\">MSN</option>
+                                <option $skype value=\"skype\">Skype</option>
+                                <option $yahoo value=\"yahoo\">Yahoo!</option>
+                                <option $other value=\"other\">Other</option>
+                            </select></dd>";
+                unset($aim,$gtalk,$icq,$msn,$skype,$yahoo,$other);
+            } ?>
+        <dd style="width: 390px;"><input type="text" class="UITextInput im" name="im[]" value="" onkeyup="addToggle('im')" />
+            <select name="imtype[]">
+                <option value="aim">AIM</option>
+                <option value="gtalk">Google Talk</option>
+                <option value="icq">ICQ</option>
+                <option value="msn">MSN</option>
+                <option value="skype">Skype</option>
+                <option value="yahoo">Yahoo!</option>
+                <option value="other">Other</option>
+            </select>
+            <span id="addim" class="addDetail unavailable">Add</span>
+        </dd>
+    </div>
+    <dt>Mobile number:</dt>
+    <div id="mobno">
+        <?php if($mobnos)foreach($mobnos as $id => $mobno) {
+                echo "<dd><input name=\"$id\" type=\"text\" class=\"UITextInput mobno\" onkeyup=\"addToggle('mobno')\" value=\"$mobno\" /></dd>";
+            } ?>
+        <dd><input type="text" class="UITextInput mobno" name="mobno[]" value="" onkeyup="addToggle('mobno')" /><span id="addmobno" class="addDetail unavailable">Add</span></dd>
+    </div>
+
+    <dt>Home Telephone:</dt>
+    <div id="homeno">
+        <?php if($homenos)foreach($homenos as $id => $homeno) {
+                echo "<dd><input name=\"$id\" type=\"text\" class=\"UITextInput homeno\" onkeyup=\"addToggle('homeno')\" value=\"$homeno\" /></dd>";
+            } ?>
+        <dd><input type="text" class="UITextInput homeno" name="homeno[]" value="" onkeyup="addToggle('homeno')" /><span id="addhomeno" class="addDetail unavailable">Add</span></dd>
+    </div>
+
+    <dt>Office Telephone:</dt>
+    <div id="officeno">
+        <?php if($officenos)foreach($officenos as $id => $officeno) {
+                echo "<dd><input name=\"$id\" type=\"text\" class=\"UITextInput officeno\" onkeyup=\"addToggle('officeno')\" value=\"$officeno\" /></dd>";
+            } ?>
+        <dd><input type="text" class="UITextInput officeno" name="officeno[]" value="" onkeyup="addToggle('officeno')" /><span id="addofficeno" class="addDetail unavailable">Add</span></dd>
+    </div>
+
+    <dt>BlackBerry PIN:</dt>
+    <div id="bb">
+        <?php if($bbs)foreach($bbs as $id => $bb) {
+                echo "<dd><input name=\"$id\" type=\"text\" class=\"UITextInput bb\" onkeyup=\"addToggle('bb')\" value=\"$bb\" /></dd>";
+            } ?>
+        <dd><input type="text" class="UITextInput bb" name="bb[]" value="" onkeyup="addToggle('bb')" /><span id="addbb" class="addDetail unavailable">Add</span></dd>
+    </div>
+
+    <dt>Fax:</dt>
+    <div id="fax">
+        <?php if($faxs)foreach($faxs as $id => $fax) {
+                echo "<dd><input name=\"$id\" type=\"text\" class=\"UITextInput fax\" onkeyup=\"addToggle('fax')\" value=\"$fax\" /></dd>";
+            } ?>
+        <dd><input type="text" class="UITextInput fax" name="fax[]" value="" onkeyup="addToggle('fax')" /><span id="addfax" class="addDetail unavailable">Add</span></dd>
+    </div>
+
+    <dt>Website:</dt>
+    <div id="website">
+        <?php if($websites)foreach($websites as $id => $website) {
+                echo "<dd><input name=\"$id\" type=\"text\" class=\"UITextInput website\" onkeyup=\"addToggle('website')\" value=\"$website\" /></dd>";
+            } ?>
+        <dd><input type="text" class="UITextInput website" name="website[]" value="" onkeyup="addToggle('website')" /><span id="addwebsite" class="addDetail unavailable">Add</span></dd>
+    </div>
+</div>
+<div class="educationInfoContainer">
+    <h3>Education Info</h3>
+    <dt>High School:</dt><dd><input type="text" class="UITextInput" name="school" value="<?=$profileInfo["school"];?>" /></dd>
+    <dt>College/University:</dt><dd><input type="text" class="UITextInput" name="collage" value="<?=$profileInfo["collage"];?>" /></dd>
+    <dt>Major:</dt><dd><input type="text" class="UITextInput" name="major" value="<?=$profileInfo["major"];?>" /></dd>
+</div>
+<div class="workInfoContainer">
+    <h3>Work Info</h3>
+    <dt>Company:</dt><dd><input type="text" class="UITextInput" name="company" value="<?=$profileInfo["company"];?>"/></dd>
+    <dt>Position:</dt><dd><input type="text" class="UITextInput" name="workposition" value="<?=$profileInfo["workposition"];?>"/></dd>
+    <dt>Working there since:</dt><dd>
+        <select name="workmonth">
+            <option value="">Month:</option>
+            <?php
+            //$months = array("January","February","March","April","May","June","July","August","September","October","November","December");
+            foreach($months as $key => $month) {
+                $key++;
+                if($profileInfo["worksince"]) {
+                    $selected = (date("F",strtotime($profileInfo["worksince"])) == $month) ? "selected" : NULL;
+                }
+                echo "<option $selected value=\"$key\">$month</option>";
+
+            }
+            ?>
+        </select>
+        <select name="workyear">
+            <option value="">Year:</option>
+            <?php
+            $i = 2010;
+            while ($i > 1900) {
+                if($profileInfo["worksince"]) {
+                    $selected = (date("Y",strtotime($profileInfo["worksince"])) == $i) ? "selected" : NULL;
+                }
+                echo "<option $selected value=\"$i\">$i</option>";
+                $i--;
+            }
+            ?>
+        </select>
+    </dd>
+    <dt>Company description:</dt><dd><textarea name="workabout"><?=$profileInfo["workabout"];?></textarea></dd>
+</div>
+<div class="UIPanel finishEditing">
+    <hr />
+    <div class="finishEditingBtn">
+        <a class="UIButton green post" onclick="$('#editProfile').submit()"><span>Done</span></a>
+    </div>
+</div>

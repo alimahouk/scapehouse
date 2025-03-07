@@ -1,0 +1,66 @@
+<!--<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Zend Framework Default Application</title>
+</head>
+<body>
+    <h1>An error occurred</h1>
+    <h2><?php echo $this->message ?></h2>
+
+<?php if (isset($this->exception)): ?>
+
+    <h3>Exception information:</h3>
+    <p>
+        <b>Message:</b> <?php echo $this->exception->getMessage() ?>
+    </p>
+
+    <h3>Stack trace:</h3>
+    <pre><?php echo $this->exception->getTraceAsString() ?>
+    </pre>
+
+    <h3>Request Parameters:</h3>
+    <pre><?php echo var_export($this->request->getParams(), true) ?>
+    </pre>
+<?php endif ?>
+
+</body>
+
+</html> -->
+
+<?php
+if($this->notFound){
+echo <<<MARKUP
+<div class="UIContainer">
+    <div class="UIInnerContainer">
+        <h3>The page you are looking for was not found</h3>
+        <hr />
+        <em>Possible reasons:</em>
+        <ul>
+            <li>The page might have been deleted.</li>
+            <li>You mistyped the address.</li>
+        </ul>
+        <!--<div class="search" action="">
+            <form method="post">
+                <div class="searchType">
+                    <label for="radio_posts">
+                        <input type="radio" name="searchTabs" class="searchBoxPostsTab" value="searchBoxPostsTab" checked />Posts
+                    </label>
+                    <label for="radio_people">
+                        <input type="radio" name="searchTabs" class="searchBoxPeopleTab" value="searchBoxPeopleTab" />People
+                    </label>
+                </div>
+                <input type="text" class="UITextInput searchBox" placeholder="Search" name="searchBox" title="Search" />
+                <input type="submit" class="UIButton large green search" value="Search" />
+                <br />
+            </form>
+        </div>-->
+    </div>
+</div>
+MARKUP;
+}else{ // {$this->exception->getMessage()} << put this in to show the error, or check the page source
+    echo <<<MARKUP
+<h2 id="restricted" >Something went wrong<span>Sorry for the inconvenience! We're working on getting this fixed as soon as possible.</span></h2>
+MARKUP;
+}
+?>
+

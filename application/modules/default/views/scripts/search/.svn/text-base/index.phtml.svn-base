@@ -1,0 +1,150 @@
+<?php $session = Model_StaticFunctions::sessionContent();
+$photo = new Logged_Model_Photo();
+
+$_GET["searchBox"] = htmlspecialchars($_GET["searchBox"]);
+
+?>
+<script>
+    $(".searchResult").live("mouseenter",function() {
+        $(".readMore",this).stop(true, true).fadeIn("fast");
+    });
+
+    $(".searchResult").live("mouseleave",function() {
+        $(".readMore",this).stop(true, true).fadeOut("fast");
+    });
+
+</script>
+<div class="search">
+    <form method="GET" action="/search">
+        <div class="searchType">
+            <label for="radio_people">
+                <input type="radio" id="radio_people" name="searchType" class="searchBoxPeopleTab" value="people" <?=($_GET["searchType"] == "people")?"checked":NULL;?>/>People
+            </label>
+	    <label for="radio_posts">
+                <input type="radio" id="radio_posts" name="searchType" class="searchBoxPostsTab" value="scapes" <?=($_GET["searchType"] == "scapes")?"checked":NULL;?>/>Scapes
+            </label>
+        </div>
+        <input type="text" spellcheck="false" autocomplete="off" class="UITextInput searchBox" value="<?=$_GET["searchBox"];?>" placeholder="Search" name="searchBox" title="Search" />
+        <input type="submit" class="UIButton large green search" value="Search" />
+    </form>
+</div>
+<div class="resultsStats">
+    <h3>Search Results<span id="searchInfo"><span class="numberOfSearchResults"><?=($this->hits[0]["total"])?$this->hits[0]["total"]:0;?></span> <?=($this->hits[0]["total"]>1||$this->hits[0]["total"]==0)?"results":"result";?> for <span class="searchQuery"><?=$_GET["searchBox"];?></span></span></h3>
+</div>
+<div class="searchResults">
+    <?php
+    if($this->hits) {
+	
+        foreach($this->hits as $hit) {
+	    
+	$watchStatusHelper = new Logged_View_Helper_WatchStatus();
+        $watchStatus = $watchStatusHelper->watchStatus($hit["userid"]);
+	
+            if($_GET["searchType"] == "people") {
+
+                echo <<<MARKUP
+
+       <div class="searchResult">
+        <div class="userPicture"><a href="/{$hit["username"]}/profile"><img src="{$photo->display($hit["userid"], "user", "small")}" alt="{$hit->fullname}" /></a></div>
+        
+	<div class="watchStatusHolder">
+	$watchStatus
+	</div>
+	
+        <div class="userName"><h4><a href="/{$hit["username"]}/profile">{$hit["fullname"]}</a></h4></div>
+        <div class="username">{$hit["username"]}</div>
+    </div>
+MARKUP;
+
+            }elseif($_GET["searchType"] == "scapes") {
+                
+                $relativeTime = Model_StaticFunctions::relativeTime(strtotime($hit["time"]));
+                $exactTime = Model_StaticFunctions::formatDateFromTimestamp($hit["time"]);
+                $hit["title"] = (mb_strlen(strip_tags($hit['title']), "UTF8") > 60)?Model_StaticFunctions::subStrWordsUTF8($hit['title'],60,"..."):$hit['title'];
+                $hit["teaser"] = (mb_strlen(strip_tags($hit['content']), "UTF8") > 160)?Model_StaticFunctions::UTF_to_Unicode(Model_StaticFunctions::subStrWordsUTF8(strip_tags($hit['content']), 160, "... <a href='/{$hit['username']}/scape/{$hit['scapeid']}'>Read more</a>")):Model_StaticFunctions::UTF_to_Unicode(strip_tags($hit['content']));
+                echo <<<MARKUP
+                      
+   <div class="searchResult" style="width:600px;" id="S{$hit["scapeid"]}">
+        <a class="UIButton grey readMore hidden" style="position:absolute;margin-left:480px;" href="/{$hit["username"]}/scape/{$hit["scapeid"]}"><span class="UIButtonTxt">&raquo;&nbsp;Go to scape</span></a>
+        <div class="identification">
+            <div class="scapeAuthorPicture"><a href="/{$hit["username"]}/profile"><img src="{$photo->display($hit["userid"], "user", "small")}" alt="{$hit["fullname"]}" /></a></div>
+            <div class="scapeAuthor"><h4><a href="/{$hit["username"]}/profile">{$hit["fullname"]}</a></h4></div>
+        </div>
+        <div class="resultBody">
+            <h3 class="searchResultTitle"><a href="/{$hit["username"]}/scape/{$hit["scapeid"]}">{$hit["title"]}</a></h3>
+            <div class="searchResultDescription">{$hit["teaser"]}</div>
+            <span class="timestamp"><a href="/{$hit["username"]}/scape/{$hit["scapeid"]}" title="$exactTime">$relativeTime</a></span>
+         <!--   <div class="userOpinions">
+                <div class="likes">10</div>
+                <div class="dislikes">3</div>
+            </div> -->
+        </div>
+    </div>
+MARKUP;
+
+            }
+        }
+    }else {
+        $deacThatsIt = true;
+        echo <<<MARKUP
+   <div class="noResults">
+        <h4>No results found for <span class="searchQuery">{$_GET["searchBox"]}</span></h4>
+							We couldn't find what you're looking for. Check your spelling or try a different term.
+    </div>
+MARKUP;
+    }
+    ?>
+
+
+    <?php
+    $viewablePages = ceil($this->hits[0]["total"] / 15);
+
+    if ($this->page < 1) {
+        $this->page = 1;
+    }
+
+    ?>
+    <div <?=($viewablePages == $this->page)?NULL:"style='display:none;'";?> class="endMarker">That's it</div>
+
+    <ul <?=($viewablePages <= 1)?"style='display:none;'":NULL;?> class="pagination">
+        <li class="previous <?=($this->page == 1) ? "off" : NULL; ?>">
+            <?php
+            if ($this->page == 1) {
+
+                echo "&laquo;&nbsp;Previous";
+            } else {
+                $prePage = $this->page - 1;
+                echo "<a href=\"?page=$prePage&searchBox={$_GET["searchBox"]}&searchType={$_GET["searchType"]}\">&laquo;&nbsp;Previous</a>";
+            }
+            ?></li>
+
+        <?php
+        $i = 1;
+
+        while ($i <= $viewablePages) {
+
+            if ($i == $this->page) {
+                $paginArray[$i] = "<li class=\"active\">$i</li>";
+            } else {
+                $paginArray[$i] = "<li><a href=\"?page=$i&searchBox={$_GET["searchBox"]}&searchType={$_GET["searchType"]}\">$i</a></li>";
+            }
+
+            $i++;
+        }
+
+        foreach ($paginArray as $pagin) {
+            echo $pagin;
+        }
+        ?>
+
+        <li class="next <?=($this->page == $viewablePages) ? "off" : NULL; ?>"><?php
+            if ($this->page == $viewablePages) {
+
+                echo "&nbsp;Next&raquo;";
+            } else {
+                $prePage = $this->page + 1;
+                echo "<a href=\"?page=$prePage&searchBox={$_GET["searchBox"]}&searchType={$_GET["searchType"]}\">&nbsp;Next&raquo;</a>";
+            }
+            ?></li>
+    </ul>
+</div>

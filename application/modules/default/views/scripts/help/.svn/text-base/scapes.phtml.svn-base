@@ -1,0 +1,25 @@
+<div class="mainWrapper">
+    <h3>Scapes</h3>
+    <p>Scapes are really the main feature of Scapehouse.</p>
+    <div class="note">
+        <h3>"Scape"house</h3>
+        <p><em>n.&nbsp;</em><strong>Scapes</strong> are flowering stems, usually leafless, rising from the crown or roots of a plant. Scapes can have a single flower or many flowers.</p>
+    </div>
+    <p>The beauty of scapes is that they're not limited to anything specific. They can be simple 1-line status updates, or multi-paragraph articles. <!--They can be open for the world to see, or limited to small group of people. --> It's really up to you and your needs.</p>
+    <h4>The Publisher</h4>
+    <img src="/graphics/en/imgs/help/publisher.png" alt="The Publisher." width="550" style="display:block;margin:0 auto;" />
+    <p>The Publisher allows you to compose and format scapes and replies. You can format text, embed images (only external ones at the moment), and add lists and links. You can also give your scape a title by clicking the <strong>Add a title</strong> button to make it more visible.</p>
+    <h4>Replies</h4>
+    <p>When you post a scape, people can reply to it. Replies by the author of scape appear in a dark blue color and replies by other people appear in light blue. <!-- The replies are not limited to text. When words aren't enough, you can reply with a photo. --></p>
+    <img src="/graphics/en/imgs/help/replies.png" alt="Replies" width="550" style="display:block;margin:0 auto;" />
+    <h4>Comments</h4>
+    <p>We don't stop at replies yet. We go even deeper, with comments. If you have something to say on what someone just said in a reply, you can comment on it. Replies are aimed directly at the scape, while comments are aimed at specific replies. For example, if someone posts a reply containing false information, you can <em>comment on that reply</em> instead of posting another reply.  This way we keep everything neat and organized.</p>
+    <h4>Editing</h4>
+    <p>Have you ever had one of those moments when you quickly post a comment, only to realize later that you made a typo? (we sure did!) You'd then have to delete that comment and post a new one. That is why we added an editing option to scapes, comments, and replies. You can easily make changes to whatever you wrote even after posting it.</p>
+    <img src="/graphics/en/imgs/help/editing_btn_scape.png" alt="Click the 'Edit' button to edit your scapes." width="205" height="157" style="display:block;margin:0 auto;" />
+    <p>Editing scapes is really easy. Just click the "Edit" button at the top, and start editing. Once you're done, click on "Done editing" to save your changes.</p>
+    <!--<h4>Privacy</h4>
+    <p>Scape-related privacy settings can be changed from the <a href="help_console.html">Settings</a>. You can also use the privacy button found in the lower panel of the Publisher.</p>
+    <img src="/graphics/en/imgs/help/privacy_btn_scape.png" alt="The scape privacy control button is located in the lower panel of the Publisher." width="85" height="78" style="display:block;margin:0 auto;" />
+   -->
+</div>

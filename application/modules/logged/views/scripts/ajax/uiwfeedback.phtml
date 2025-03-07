@@ -1,0 +1,38 @@
+<div class="UIWindow feedback" id="feedbackWindow">
+    <div class="titleBar">
+        <h2>Send Feedback</h2><span class="closeBtn" title="Close" onclick="$('#feedbackWindow').fadeOut();$('#pageOverlay').hide();"><a ><span class="UIIcon px16 cross"></span></a></span>
+    </div>
+    <div class="UIWindowContents">
+
+        <p class="message">Thank you so much for taking the time to give us your feedback on Scapehouse!</p>
+        <dt>Type of feedback:</dt>
+
+        <dd>
+            <select id="feedbackType">
+                <option value="other">Select one:</option>
+                <option value="bug">Bug Report</option>
+                <option value="feature">Feature Suggestion</option>
+                <option value="comment">Comment</option>
+                <option value="other">Other</option>
+            </select>
+        </dd>
+        <dt>Message:</dt>
+        <dd>
+            <textarea id="feedbackContent"></textarea>
+        </dd>
+        <dt>Give us a thumbs up or down?</dt>
+        <dd style="overflow:hidden;width: 200px;">
+            <label for="thumbsUp">
+                <input type="radio" name="thumbs" id="feedbackThumbsUp" class="UIRadioBtn" value="1" checked /><span class="thumbsUp">Thumbs up</span>
+            </label>
+            <label for="thumbsDown">
+                <input type="radio" name="thumbs" id="feedbackThumbsDown"  class="UIRadioBtn" value="1" /><span class="thumbsDown">Thumbs down</span>
+            </label>
+        </dd>
+        <hr />
+        
+        <a onclick="O.UIWindow.feedbackSubmit($('#feedbackType').val(),$('#feedbackContent').val(),$('#feedbackThumbsUp').is(':checked'),$('#feedbackThumbsDown').is(':checked'));$('#feedbackWindow').fadeOut();$('#pageOverlay').hide();"
+           class="UIButton green large submit"><span class="UIButtonTxt">Submit</span></a>
+        
+    </div>
+</div>

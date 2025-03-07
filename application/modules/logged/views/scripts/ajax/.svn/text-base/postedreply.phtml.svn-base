@@ -1,0 +1,3 @@
+<?php
+if($this->reply) {echo Logged_Model_Reply::display($this->reply,"update");}
+?>

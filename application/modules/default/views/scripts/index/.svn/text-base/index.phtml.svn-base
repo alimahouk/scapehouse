@@ -1,0 +1,80 @@
+<?php
+
+$browser = new Model_Browser();
+if( $browser->getBrowser() == Model_Browser::BROWSER_IE && $browser->getVersion() == 6 ) {
+    $ie6 = TRUE;
+}elseif($browser->getBrowser() == Model_Browser::BROWSER_IE && $browser->getVersion() == 6) {
+    $ie7 = TRUE;
+}
+?>
+<script>
+    $(document).ready(function(){$("#username").focus();});
+</script>
+<style>
+html.homepage.public #discuss {
+background: white url(/graphics/en/icons/bubble_16px.png) no-repeat 0px -1px;
+}
+html.homepage.public #profile {
+background: white url(/graphics/en/icons/profile.png) no-repeat 0px 0px;
+}
+</style>
+<div id="leftPanel"> 
+    <div id="loginPanel">
+        <form method="post">
+            <fieldset>
+                <label for="username" class="UILabel"><span>Username or Email:</span>
+                    <input type="text"  id="username" name="username" class="UITextInput" value="<?= $_POST['username']; ?>"/>
+                </label>
+                <label for="password" class="UILabel"><span>Password:</span>
+                    <input type="password" id="password" name="password" class="UITextInput password" value="<?= $_POST['password']; ?>" onKeyPress="return submitenter(this,event)"/>
+                </label>
+                <label for="rememberMe" class="UILabel UICheckbox">
+                    <input type="checkbox" id="rememberMe" name="rememberMe" class="UICheckbox" value="1" /> Remember me
+                </label>
+                <span <?=($ie6||$ie7)?'class="UIButton login"':NULL;?>><input type="submit" class="UIButton large green login" value="Login" /></span>
+            </fieldset>
+        </form>
+        <a id="forgotPassword" class="hidden">Forgot your password?</a>
+    </div>  
+    <div id="signupPanel">
+      <span class="overlap">OR</span>
+      <hr />
+      <div id="signupBtn">
+       <span><a href="/signup">Join now!</a></span>
+      </div>It&lsquo;s free &amp; it only takes a second.
+     </div>
+</div>
+<div id="rightPanel">
+    <div id="description">
+        <h2><span><strong>Scapehouse</strong> is a tool that helps you find and share any kind of information with the people you want.</span></h2>
+    </div>
+    <div class="search" action="">
+        <form method="GET" action="/search">
+            <fieldset>
+                <legend>Search</legend>
+                <label for="radio_posts">
+                    <input type="radio" name="searchType" class="searchBoxPostsTab" value="scapes" checked />Scapes
+                </label>
+                <label for="radio_people">
+                    <input type="radio" name="searchType" class="searchBoxPeopleTab" value="people" />People
+                </label>
+                <input spellcheck="false" autocomplete="off" type="text" id="searchBox" name="searchBox" title="Search" />
+                <br />
+
+            </fieldset>
+        </form>
+    </div>
+    <hr class="UIHSeparator" />
+    <div id="features">
+        <h3>You can use Scapehouse to...</h3>
+        <ul>
+
+            <li id="findPeople">Find people you know, or people who share your interests.</li>
+            <!--<li id="controlPrivacy">Control your privacy. You are in control of everything, from your posts to your profile</li>-->
+            <li id="postAnything">Publish anything. From short status updates to full-length articles, complete with text formatting and photos.</li>
+            <li id="discuss">Engage in diverse, rich and organized discussions.</li>
+            <li id="profile">Organize your profile and personal information.</li>
+            
+        </ul>
+    </div>
+</div>

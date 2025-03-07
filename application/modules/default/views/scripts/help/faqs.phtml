@@ -1,0 +1,34 @@
+<div class="mainWrapper">
+					<h3>Frequently Asked Questions (FAQs)</h3>
+					<ul class="sectionListing">
+						<li><a href="#questionUsername" onclick="$('.answer:eq(0)').slideDown();">Can I change my username?</a></li>
+						<li><a href="#questionNoConfirmationEmail" onclick="$('.answer:eq(1)').slideDown();">My Confirmation email didn't arrive.</a></li>
+						<li><a href="#questionChangeLoginEmail" onclick="$('.answer:eq(2)').slideDown();">How do I change the email I use to log in?</a></li>
+						<li><a href="#questionChangeName" onclick="$('.answer:eq(3)').slideDown();">How do I change my name?</a></li>
+						<li><a href="#questionChangePasswd" onclick="$('.answer:eq(4)').slideDown();">How do I change my password?</a></li>
+						<li><a href="#questionPrivacy" onclick="$('.answer:eq(5)').slideDown();">Who can see my information?</a></li>
+						<li><a href="#questionForgotPasswd" onclick="$('.answer:eq(6)').slideDown();">I forgot my password.</a></li>
+					</ul>
+					<hr />
+					<h3 class="question" id="questionUsername" onclick="$('.answer:eq(0)').slideDown();">Can I change my username?</h3>
+					<p class="answer hidden" >Nope. Sorry! You can't change your username.</p>
+					<hr />
+					<h3 class="question" id="questionNoConfirmationEmail" onclick="$('.answer:eq(1)').slideDown();">My Confirmation email didn't arrive.</h3>
+					<p class="answer hidden">Check your email application's spam or junk folder or filter, if you are still unable to find the email, click the "Resend email" button on the "Validation Reminder" strip that appears at the bottom of the page.</p>
+					<hr />
+					<h3 class="question" id="questionChangeLoginEmail" onclick="$('.answer:eq(2)').slideDown();">How do I change the email I use to log in?</h3>
+					<p class="answer hidden">This facility is not currently available and will be added as soon as possible. Sorry for the inconvenience.</p>
+					<hr />
+					<h3 class="question" id="questionChangeName" onclick="$('.answer:eq(3)').slideDown();">How do I change my name?</h3>
+					<p class="answer hidden">You can change your name by going to the "<a <?php if($GLOBALS["session"]): ?> href="/<?=$GLOBALS["session"]->username;?>/console/account" <?php endif; ?> >Account</a>" section in the Settings and clicking on the "Change my name" tab on the left.</p>
+					<hr />
+					<h3 class="question" id="questionChangePasswd" onclick="$('.answer:eq(4)').slideDown();">How do I change my password?</h3>
+					<p class="answer hidden">You can change your password by going to the "<a <?php if($GLOBALS["session"]): ?> href="/<?=$GLOBALS["session"]->username;?>/console/account" <?php endif; ?> >Account</a>" section in the Settings and clicking on the "Change my password" tab on the left.</p>
+					<hr />
+					<h3 class="question" id="questionPrivacy" onclick="$('.answer:eq(5)').slideDown();">Who can see my information?</h3>
+					<p class="answer hidden">Currently every thing you create and publish on Scapehouse is available for the public to view, although privacy options will be added in the near future.</p>
+					<hr />
+					<h3 class="question" id="questionForgotPasswd" onclick="$('.answer:eq(6)').slideDown();">I forgot my password.</h3>
+					<p class="answer hidden">This facility is not currently available due to security concerns and will be added as soon as possible. Sorry for the inconvenience.</p>
+
+</div>

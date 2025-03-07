@@ -1,0 +1,7 @@
+<?php
+if($this->privacy[0]["hide"]){echo "<div id='typeHidden'>";}elseif($item[0]["show"]){echo "<div id='typShow'>";};
+foreach($this->privacy as $item){
+ echo "<div id='{$item["id"]}' class='item'><span class='userName'>{$item["fullname"]}</span><span onclick=\"$('#{$item["id"]}').remove();\" class='removeBtn' title='Remove'>X</span></div>";
+}
+echo "</div>";
+?>

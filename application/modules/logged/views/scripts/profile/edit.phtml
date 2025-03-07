@@ -1,0 +1,757 @@
+<script>
+
+    $(document).ready(function(){
+        var section = $(location).attr('hash').replace(/#/,"");
+        switch(section){
+            case "personal":
+             $(".navLink").removeClass("active");
+             $("#personalEditorNav").addClass("active");
+
+             $(".infoEditor").hide();
+             $("#personalInfoTable").show();
+             break;
+             
+             case "contact":
+             $(".navLink").removeClass("active");
+             $("#contactEditorNav").addClass("active");
+
+             $(".infoEditor").hide();
+             $("#contactInfoTable").show();
+             break;
+
+             case "education":
+             $(".navLink").removeClass("active");
+             $("#educationEditorNav").addClass("active");
+
+             $(".infoEditor").hide();
+             $("#educationInfoTable").show();
+             break;
+
+             case "work":
+             $(".navLink").removeClass("active");
+             $("#workEditorNav").addClass("active");
+
+             $(".infoEditor").hide();
+             $("#workInfoTable").show();
+             break;
+        }
+
+	    $("#pmEdit").click(function(){
+	    var input;
+	    
+	    O.orignalPm = $.trim($("#pmSpan").html());
+	    
+	    if(O.orignalPm == "A little personal message..."){
+		input = "";
+	    }else{
+		input = O.orignalPm;
+	    }
+	    
+	    $("#pmSpan").html("<textarea id='pmEditor' maxlength='400'>"+input+"</textarea>");
+	    $("#pmEditor").focus();
+	    $(this).hide();
+	    
+	});
+
+	$("#pmEditor").live("blur",function(){
+	    if($.trim($(this).val()) == ""){
+		$("#pmSpan").html("A little personal message...");
+	    }else{
+	      $("#pmSpan").html($(this).val());  
+	    }
+
+	    // Ajax call
+	    $.ajax({
+		type:"POST",
+		url:"/logged/ajax/savepm",
+		data: "pm=" + encodeURIComponent($.trim($("#pmSpan").html()))   
+	    });
+	    
+	    $("#pmEdit").show();
+	    $(this).remove();
+	});
+		
+    });
+
+    $(".navLink").live("click",function(){
+        $(".navLink").removeClass("active");
+        $(this).addClass("active");
+
+        var secId = $(this).attr("section");
+
+        $(".infoEditor").hide();
+        $("#"+secId).show();
+                
+    });
+    $(".addDetail").live("click",function(){
+	
+        var detailId = $(this).parents("td.value").attr("id");
+	$("#"+detailId).append($("#"+detailId+" .bank").html());
+	$("#"+detailId+" input:last").focus();
+	$(this).remove();
+	
+	// Exception code for limiting number of nationalities to 3 (I really dont know how I got it to work).
+	if(detailId == "nationality"){
+	    if(!window.added){window.added = 0;}
+	    if(window.added >= 1){ // remove the bank
+		$("#"+detailId+" .bank").remove();
+	    }
+	    if(window.added >= 0){ // remove the add button form the bank 1 click before the bank is removed
+		// to avoid an add button on the last added select box.
+		$("#"+detailId+" .bank .addDetail").remove();
+	    }
+	    window.added++;
+	}
+    });
+</script>
+<h2 class="userName"><?=$GLOBALS["session"]->fullname?><span class="username">(<?=$GLOBALS["session"]->username?>)</span></h2>
+<div id="personalMsg"><span id="pmEdit" class="editBtn" title="Edit"></span><span id="pmSpan" class="editable"><?=($this->info["pm"])?$this->info["pm"]:"A little personal message...";?></span></div>
+
+<div id="profileInfo">
+    <div class="tabbedView">
+        <!-- <ul class="UITabContainer">
+                    <li class="UITab timeline">
+                            <a class="UITab" href="profile_timeline.html">Timeline</a>
+                    </li>
+                    <li class="UITab info activeTab">
+                            <a class="UITab" href="profile.html">Info</a>
+                    </li>
+            </ul> -->
+        <div class="UIView info editingMod" >
+            <!--<a href="#" class="privacySettingsBtn">Who can see these?</a>-->
+            <table class="container" border="0" cellspacing="0">
+                <tbody>
+                <td class="tabColumn">
+                    <ul>
+                        <li><a section="basicInfoTable" id="basicEditorNav" class="navLink active"><span class="UIIcon basic"></span>Basic Info</a></li>
+                        <li><a section="personalInfoTable" id="personalEditorNav" class="navLink"><span class="UIIcon personal"></span>Personal Info</a></li>
+                        <li><a section="contactInfoTable" id="contactEditorNav" class="navLink"><span class="UIIcon contact"></span>Contact Info</a></li>
+                        <li><a section="educationInfoTable"id="educationEditorNav" class="navLink"><span class="UIIcon education"></span>Education Info</a></li>
+                        <li><a section="workInfoTable" id="workEditorNav" class="navLink"><span class="UIIcon work"></span>Work Info</a></li>
+                    </ul>
+                </td>
+                <td class="editingColumn">
+                    <div id="editingTip">Click "Save Changes" at the bottom to save your changes.</div>
+                    <!-- Possible classes are: basic, personal, contact, education, work -->
+                    <div id="editingView" class="editingView" style="width:540px;">
+			<form method="POST" action="?jelloon=affirm&jelloonContent=Changes saved.#basic">
+                        <table id="basicInfoTable" class="infoEditor" border="0" cellspacing="0">
+			    <input type="hidden" name="section" value="basic"/>
+                                <tbody>
+                                    <tr>
+                                        <td class="label">Location:</td>
+                                        <td class="value">
+                                            <div class="firstItem location"><input type="text" class="UITextInput" value="<?=$this->info["location"];?>" name="location" maxlength="50"/></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">Sex:</td>
+                                        <td class="value">
+                                            <select name="sex">
+                                                <option value="">I am:</option>
+                                                <option value="m" <?=($this->info["sex"] == "m")?"selected":NULL;?>>Male</option>
+                                                <option value="f" <?=($this->info["sex"] == "f")?"selected":NULL;?>>Female</option>
+                                            </select>
+                                            <!-- <input type="checkbox" class="UICheckbox showGender" checked="checked" /> Show in my profile -->
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">Nationality:</td>
+                                        <td id="nationality" class="value">
+                                            <div class="listItem nationality">
+                                                    <select name="nationality[]"> 
+					          <option value="" >Select one:</option> 
+					          <?php foreach($this->countries as $country):?>
+						  <option value="<?=$country["code"];?>" <?=($this->info["nationality"][0] == $country["code"])?"selected":NULL;?>><?=$country["name"];?></option>
+						  <? endforeach; ?>
+					        </select>
+                                            </div>
+					    <div class="listItem nationality">
+                                                    <select name="nationality[]"> 
+					          <option value="" >Select one:</option> 
+					          <?php foreach($this->countries as $country):?>
+						  <option value="<?=$country["code"];?>" <?=($this->info["nationality"][1] == $country["code"])?"selected":NULL;?>><?=$country["name"];?></option>
+						  <? endforeach; ?>
+					        </select>
+                                            </div>
+					    <div class="listItem nationality">
+                                                    <select name="nationality[]"> 
+					          <option value="" >Select one:</option> 
+					          <?php foreach($this->countries as $country):?>
+						  <option value="<?=$country["code"];?>" <?=($this->info["nationality"][2] == $country["code"])?"selected":NULL;?>><?=$country["name"];?></option>
+						  <? endforeach; ?>
+					        </select>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">Birthday:</td>
+                                        <td class="value">
+                                                    <select  class="days" name="bday">
+							<option value="">Day:</option>
+							<?php
+							$b = 1;
+							while ($b <= 31) {
+					    
+							    if($this->info["birthday"]["date"]) {
+								$selected = (date("j",strtotime($this->info["birthday"]["date"])) == $b) ? "selected" : NULL;
+							    }
+							    echo "<option $selected value=\"$b\">$b</option>";
+							    $b++;
+							}
+							?>
+						    </select>
+						    <select class="months" name="bmonth">
+							<option value="">Month:</option>
+							<?php
+							$months = array("January","February","March","April","May","June","July","August","September","October","November","December");
+							foreach($months as $key => $month) {
+							    $key++;
+							    if($this->info["birthday"]["date"]) {
+								$selected = (date("F",strtotime($this->info["birthday"]["date"])) == $month) ? "selected" : NULL;
+							    }
+							    echo "<option $selected value=\"$key\">$month</option>";
+					    
+							}
+							?>
+						    </select>
+						    <select class="years" name="byear">
+							<option value="">Year:</option>
+							<?php
+							$i = 2009;
+							while ($i > 1900) {
+							    if($this->info["birthday"]["date"]) {
+								$selected = (date("Y",strtotime($this->info["birthday"]["date"])) == $i) ? "selected" : NULL;
+							    }
+							    echo "<option $selected value=\"$i\">$i</option>";
+							    $i--;
+							}
+							?>
+					    
+						    </select>
+                                        </td>
+                                    </tr>
+				    <tr>
+                                        <td class="label"></td>
+                                        <td class="value">
+                                            <span class="note" style="width:300px;margin:0px;">Note that you need to provide your full birth date or else it won't be saved</span>
+                                        </td>
+                                    </tr>
+				    <tr>
+					<td class="label"></td>
+					<td class="value">
+					    <select name="birthdayOption">
+						<option value="1" <?=($this->info["birthday"]["option"] == 1)?"selected":NULL;?>>Display my full birthday</option>
+						<option value="2" <?=($this->info["birthday"]["option"] == 2)?"selected":NULL;?>>Only display the month & day</option>
+						<option value="3" <?=($this->info["birthday"]["option"] == 3)?"selected":NULL;?>>Only display my age</option>
+					    </select>
+					</td>
+			            </tr>
+				    
+                                    <tr>
+                                        <td colspan="2" style="height: 70px"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="UIPanel" colspan="2"><input type="submit" class="UIButton large green save" value="Save Changes" /><a href="#" class="UIButton large grey cancel"><span class="UIButtonTxt">Cancel</span></a></td>
+                                    </tr>
+                                </tbody> 
+                        </table>
+				</form>
+		 <form method="POST" action="?jelloon=affirm&jelloonContent=Changes saved.#personal">
+                        <table id="personalInfoTable" class="infoEditor hidden" border="0" cellspacing="0">
+			    <input type="hidden" name="section" value="personal"/>               
+                                <tbody>
+                                    <tr>
+                                        <td class="label">About me:</td>
+                                        <td class="value">
+                                            <textarea maxlength="1000" name="aboutme"><?=strip_tags($this->info["aboutme"]);?></textarea>
+                                        </td>
+                                    </tr>
+                                    <tr class="separator">
+                                        <td></td>
+                                        <td class="value"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">Favorite books:</td>
+                                        <td id="book" class="value">
+					    <div class="bank hidden"><div class="listItem book"><input type="text" class="UITextInput" name="book[]" maxlength="50"/><span class="addDetail">Add another</span></div></div>
+					    <?php
+					    $bookCount = count($this->info["book"]);
+					    // prevent foreach from failing
+					    if($bookCount == 0) {$this->info["book"] = array(""); $bookCount = 1;}					    
+					    foreach($this->info["book"] as $key => $book): ?>
+					    
+                                            <div class="listItem <?=($key == 0)?"firstItem":NULL;?> book"><input type="text" class="UITextInput" name="book[]" maxlength="50" value="<?=$book;?>"/>
+					    <?php if($key == $bookCount-1): // count-1 because arrays start from 0 and count starts from 1?>		    
+					    <span class="addDetail">Add another</span>
+					    <?php endif; ?>	    
+					    </div>
+		    
+					    <?php endforeach; ?>
+                                        </td>
+                                    </tr>
+                                    <tr class="separator">
+                                        <td></td>
+                                        <td class="value"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">Favorite games:</td>
+                                        <td id="game" class="value">
+                                            <div class="bank hidden"><div class="listItem game"><input type="text" class="UITextInput" name="game[]" maxlength="50"/><span class="addDetail">Add another</span></div></div>
+                                            <?php
+					    $gameCount = count($this->info["game"]);
+					    // prevent foreach from failing
+					    if($gameCount == 0) {$this->info["game"] = array(""); $gameCount = 1;} 					    
+					    foreach($this->info["game"] as $key => $game): ?>
+					    
+                                            <div class="listItem <?=($key == 0)?"firstItem":NULL;?> game"><input type="text" class="UITextInput" name="game[]" maxlength="50" value="<?=$game;?>"/>
+					    <?php if($key == $gameCount-1): // count-1 because arrays start from 0 and count starts from 1?>		    
+					    <span class="addDetail">Add another</span>
+					    <?php endif; ?>	    
+					    </div>
+		    
+					    <?php endforeach; ?>
+                                        </td>
+                                    </tr>
+                                    <tr class="separator">
+                                        <td></td>
+                                        <td class="value"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">Favorite TV shows:</td>
+                                        <td id="tvshow" class="value">
+                                            <div class="bank hidden"><div class="listItem tvshow"><input type="text" class="UITextInput" name="tvshow[]" maxlength="50"/><span class="addDetail">Add another</span></div></div>
+                                            <?php
+					    $tvshowCount = count($this->info["tvshow"]);
+					    // prevent foreach from failing
+					    if($tvshowCount == 0) {$this->info["tvshow"] = array(""); $tvshowCount = 1;} 					    
+					    foreach($this->info["tvshow"] as $key => $tvshow): ?>
+					    
+                                            <div class="listItem <?=($key == 0)?"firstItem":NULL;?> tvshow"><input type="text" class="UITextInput" name="tvshow[]" maxlength="50" value="<?=$tvshow;?>"/>
+					    <?php if($key == $tvshowCount-1): // count-1 because arrays start from 0 and count starts from 1?>		    
+					    <span class="addDetail">Add another</span>
+					    <?php endif; ?>	    
+					    </div>
+		    
+					    <?php endforeach; ?>
+                                        </td>
+                                    </tr>
+                                    <tr class="separator">
+                                        <td></td>
+                                        <td class="value"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">Favorite movies:</td>
+                                        <td id="movie" class="value">
+                                            <div class="bank hidden"><div class="listItem movie"><input type="text" class="UITextInput" name="movie[]" maxlength="50"/><span class="addDetail">Add another</span></div></div>
+                                            <?php
+					    $movieCount = count($this->info["movie"]);
+					    // prevent foreach from failing
+					    if($movieCount == 0) {$this->info["movie"] = array(""); $movieCount = 1;} 					    
+					    foreach($this->info["movie"] as $key => $movie): ?>
+					    
+                                            <div class="listItem <?=($key == 0)?"firstItem":NULL;?> movie"><input type="text" class="UITextInput" name="movie[]" maxlength="50" value="<?=$movie;?>"/>
+					    <?php if($key == $movieCount-1): // count-1 because arrays start from 0 and count starts from 1?>		    
+					    <span class="addDetail">Add another</span>
+					    <?php endif; ?>	    
+					    </div>
+		    
+					    <?php endforeach; ?>
+                                        </td>
+                                    </tr>
+                                    <tr class="separator">
+                                        <td></td>
+                                        <td class="value"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">Favorite music:</td>
+                                        <td id="music" class="value">
+                                            <div class="bank hidden"><div class="listItem music"><input type="text" class="UITextInput" name="music[]" maxlength="50"/><span class="addDetail">Add another</span></div></div>
+                                            <?php
+					    $musicCount = count($this->info["music"]);
+					    // prevent foreach from failing
+					    if($musicCount == 0) {$this->info["music"] = array(""); $musicCount = 1;} 					    
+					    foreach($this->info["music"] as $key => $music): ?>
+					    
+                                            <div class="listItem <?=($key == 0)?"firstItem":NULL;?> music"><input type="text" class="UITextInput" name="music[]" maxlength="50" value="<?=$music;?>"/>
+					    <?php if($key == $musicCount-1): // count-1 because arrays start from 0 and count starts from 1?>		    
+					    <span class="addDetail">Add another</span>
+					    <?php endif; ?>	    
+					    </div>
+		    
+					    <?php endforeach; ?>
+                                        </td>
+                                    </tr>
+                                    <tr class="separator">
+                                        <td></td>
+                                        <td class="value"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">Interests:</td>
+                                        <td id="interest" class="value">
+                                            <div class="bank hidden"><div class="listItem interest"><input type="text" class="UITextInput" name="interest[]" maxlength="50"/><span class="addDetail">Add another</span></div></div>
+                                            <?php
+					    $interestCount = count($this->info["interest"]);
+					    // prevent foreach from failing
+					    if($interestCount == 0) {$this->info["interest"] = array(""); $interestCount = 1;}
+					    foreach($this->info["interest"] as $key => $interest): ?>
+					    
+                                            <div class="listItem <?=($key == 0)?"firstItem":NULL;?> interest"><input type="text" class="UITextInput" name="interest[]" maxlength="50" value="<?=$interest;?>"/>
+					    <?php if($key == $interestCount-1): // count-1 because arrays start from 0 and count starts from 1?>		    
+					    <span class="addDetail">Add another</span>
+					    <?php endif; ?>	    
+					    </div>
+		    
+					    <?php endforeach; ?>
+                                        </td>
+                                    </tr>
+                                    <tr class="separator">
+                                        <td></td>
+                                        <td class="value"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">Things I can't live without:</td>
+                                        <td id="needs" class="value">
+                                            <div class="bank hidden"><div class="listItem things"><input type="text" class="UITextInput" name="need[]" maxlength="50"/><span class="addDetail">Add another</span></div></div>
+                                            <?php
+					    $needCount = count($this->info["need"]);
+					    // prevent foreach from failing
+					    if($needCount == 0) {$this->info["need"] = array(""); $needCount = 1;} 
+					    foreach($this->info["need"] as $key => $need): ?>
+					    
+                                            <div class="listItem <?=($key == 0)?"firstItem":NULL;?> things"><input type="text" class="UITextInput" name="need[]" maxlength="50" value="<?=$need;?>"/>
+					    <?php if($key == $needCount-1): // count-1 because arrays start from 0 and count starts from 1?>		    
+					    <span class="addDetail">Add another</span>
+					    <?php endif; ?>	    
+					    </div>
+		    
+					    <?php endforeach; ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" style="height: 50px"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="UIPanel" colspan="2"><input type="submit" class="UIButton large green save" value="Save Changes" /><a href="#" class="UIButton large grey cancel"><span class="UIButtonTxt">Cancel</span></a></td>
+                                    </tr>
+                                </tbody>
+                            
+                        </table>
+		    </form>
+		    <form method="POST" action="?jelloon=affirm&jelloonContent=Changes saved.#contact">
+                        <table id="contactInfoTable" class="infoEditor hidden"  border="0" cellspacing="0">
+                            <input type="hidden" name="section" value="contact"/>     
+                                <tbody>
+                                    <tr>
+                                        <td class="label">Emails:</td>
+                                        <td id="email" class="value">
+                                            <div class="bank hidden"><div class="listItem email"><input type="text" class="UITextInput" name="email[]" maxlength="50"/><span class="addDetail">Add another</span></div></div>
+					 <?php
+					    $emailCount = count($this->info["email"]);
+					    // prevent foreach from failing
+					    if($emailCount == 0) {$this->info["email"] = array(""); $emailCount = 1;} 
+					    foreach($this->info["email"] as $key => $email): ?>
+					    
+                                            <div class="listItem <?=($key == 0)?"firstItem":NULL;?> things"><input type="text" class="UITextInput" name="email[]" maxlength="50" value="<?=$email;?>"/>
+					    <?php if($key == $emailCount-1): // count-1 because arrays start from 0 and count starts from 1?>		    
+					    <span class="addDetail">Add another</span>
+					    <?php endif; ?>	    
+					    </div>
+		    
+					    <?php endforeach; ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label"></td>
+                                        <td class="value">
+                                            <span class="note" style="width:300px;margin:0px;">Please note that these emails are just for display in your profile and changing the email here does not change the one you use to log in.<!-- To change the email you use to log in, check out the <a href="#">Settings</a>. --></span>
+                                        </td>
+                                    </tr>
+                                    <tr class="separator">
+                                        <td></td>
+                                        <td class="value"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">IM:</td>
+                                        <td id="im" class="value">
+					    <div class="bank hidden">
+						    <div class="listItem IM">
+						    <input type="text" class="UITextInput" name="im[text][]"/>
+						    <select name="im[type][]">
+							<option value="aim">AIM</option>
+							<option value="gtalk">Google Talk</option>
+							<option value="icq">ICQ</option>		
+							<option value="skype">Skype</option>
+							<option value="winlive">Windows Live</option>
+							<option value="yahoo">Yahoo!</option>
+							<option value="other">Other</option>
+						    </select>
+						    <span class="addDetail">Add</span>
+						</div>
+					    </div>
+					    <?php
+					    
+					    $imCount = count($this->info["im"]["text"]);
+					    // prevent foreach from failing
+					    if($imCount == 0) {$this->info["im"]["text"] = array(""); $imCount = 1;}
+					    
+					    foreach($this->info["im"]["text"] as $key => $im): ?>
+                                            <div class="listItem <?=($key == 0)?"firstItem":NULL;?> IM">
+                                                <input type="text" class="UITextInput" name="im[text][]" value="<?=$im;?>"/>
+                                                <select name="im[type][]">
+                                                    <option value="aim" <?=($this->info["im"]["type"][$key] == "aim")?"selected":NULL;?>>AIM</option>
+						    <option value="gtalk" <?=($this->info["im"]["type"][$key] == "gtalk")?"selected":NULL;?>>Google Talk</option>
+						    <option value="icq" <?=($this->info["im"]["type"][$key] == "icq")?"selected":NULL;?>>ICQ</option>		
+						    <option value="skype" <?=($this->info["im"]["type"][$key] == "skype")?"selected":NULL;?>>Skype</option>
+						    <option value="winlive" <?=($this->info["im"]["type"][$key] == "winlive")?"selected":NULL;?>>Windows Live</option>
+						    <option value="yahoo" <?=($this->info["im"]["type"][$key] == "yahoo")?"selected":NULL;?>>Yahoo!</option>
+						    <option value="other" <?=($this->info["im"]["type"][$key] == "other")?"selected":NULL;?>>Other</option>
+                                                </select>
+					    <?php if($key == $imCount-1): // count-1 because arrays start from 0 and count starts from 1?>		    
+					    <span class="addDetail">Add</span>
+					    <?php endif; ?>
+                                            </div>
+					 <?php endforeach; ?>
+                                        </td>
+                                    </tr>
+                                    <tr class="separator">
+                                        <td></td>
+                                        <td class="value"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">Mobile phone:</td>
+                                        <td id="mobile" class="value">
+                                            <!--<div class="bank hidden"><div class="listItem mobile"><input type="text" class="UITextInput" name="mobile[]" maxlength="50"/><span class="addDetail">Add another</span></div></div>-->
+                                            <div class="listItem firstItem mobile"><input type="text" class="UITextInput" name="mobile" maxlength="50" value="<?=$this->info["mobile"];?>"/></div>
+                                        </td>
+                                    </tr>
+                                    <tr class="separator">
+                                        <td></td>
+                                        <td class="value"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">Land phone:</td>
+                                        <td id="landPhone" class="value">
+                                            <!--<div class="bank hidden"><div class="listItem landPhone"><input type="text" class="UITextInput" name="landphone[]" maxlength="50"/><span class="addDetail">Add another</span></div></div>-->
+                                            <div class="listItem firstItem landPhone"><input type="text" class="UITextInput" name="landphone" maxlength="50" value="<?=$this->info["landphone"];?>"/></div>
+                                        </td>
+                                    </tr>
+                                    <tr class="separator">
+                                        <td></td>
+                                        <td class="value"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">BlackBerry PIN:</td>
+                                        <td id="bb" class="value">
+                                           <!-- <div class="bank hidden"><div class="listItem bbPIN"><input type="text" class="UITextInput" name="bb[]" maxlength="8"/><span class="addDetail">Add another</span></div></div> -->
+                                            <div class="listItem firstItem bbPIN"><input type="text" class="UITextInput" name="bb" maxlength="8" value="<?=$this->info["bb"];?>"/></div>
+                                        </td>
+                                    </tr>
+                                    <tr class="separator">
+                                        <td></td>
+                                        <td class="value"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">Website:</td>
+                                        <td id="website" class="value">
+					    <div class="listItem firstItem website">
+                                                <input type="text" class="UITextInput websiteName" title="Website name" placeholder="Website name" name="website[name]" maxlength="50" value="<?=$this->info["website"]["name"];?>"/>
+                                                <input type="text" class="UITextInput websiteURL" title="Website URL" placeholder="Website URL" name="website[url]" maxlength="50" value="<?=$this->info["website"]["url"];?>"/>           
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" style="height: 50px"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="UIPanel" colspan="2"><input type="submit" class="UIButton large green save" value="Save Changes" /><a href="#" class="UIButton large grey cancel"><span class="UIButtonTxt">Cancel</span></a></td>
+                                    </tr>
+                                </tbody>
+                         </table>
+			 </form>
+			 <form method="POST" action="?jelloon=affirm&jelloonContent=Changes saved.#education">
+                        <table id="educationInfoTable" class="infoEditor hidden"  border="0" cellspacing="0">
+                            <input type="hidden" name="section" value="education"/>     
+                                <tbody>
+				     <tr>
+                                        <td class="label">High school:</td>
+                                        <td id="highSchool" class="value">
+                                            <div class="firstItem highSchool">
+                                                <input type="text" class="UITextInput" maxlength="50" name="school[text]" value="<?=$this->info["school"]["text"];?>"/> class of
+                                                <select class="years" name="school[year]">
+							<option value="">Select year:</option>
+							<?php
+							$i = 2015;
+							while ($i > 1900) {
+							    if($this->info["school"]["year"]) {
+								$selected = ($this->info["school"]["year"] == $i) ? "selected" : NULL;
+							    }
+							    echo "<option $selected value=\"$i\">$i</option>";
+							    $i--;
+							}
+							?>
+					    
+						    </select>
+                                            </div>
+                                        </td>
+                                    </tr>
+				    
+				    <tr class="separator">
+                                        <td></td>
+                                        <td class="value"></td>
+                                    </tr>
+				    
+                                    <tr>
+                                        <td class="label">College/University:</td>
+                                        <td class="value">
+                                            <div class="firstItem college">
+                                                <input type="text" class="UITextInput" maxlength="50" name="collage[text]" value="<?=$this->info["collage"]["text"];?>"/> class of
+                                                <select class="years" name="collage[year]">
+							<option value="">Select year:</option>
+							<?php
+							$i = 2015;
+							while ($i > 1900) {
+							    if($this->info["collage"]["year"]) {
+								$selected = ($this->info["collage"]["year"] == $i) ? "selected" : NULL;
+							    }
+							    echo "<option $selected value=\"$i\">$i</option>";
+							    $i--;
+							}
+							?>
+					    
+						    </select>
+                                            </div>
+                                        </td>
+                                    </tr>
+				    
+				    <tr class="separator">
+                                        <td></td>
+                                        <td class="value"></td>
+                                    </tr>
+				    
+                                    <tr>
+                                        <td class="label">Majors:</td>
+                                        <td class="value">
+                                            <div class="listItem firstItem concentration"><input type="text" class="UITextInput" maxlength="50" name="major[]" value="<?=$this->info["major"][0];?>"/></div>
+					    <div class="listItem concentration"><input type="text" class="UITextInput" maxlength="50" name="major[]" value="<?=$this->info["major"][1];?>"/></div>
+					    <div class="listItem concentration"><input type="text" class="UITextInput" maxlength="50" name="major[]" value="<?=$this->info["major"][2];?>"/></div>
+                                        </td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td colspan="2" style="height: 50px"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="UIPanel" colspan="2"><input type="submit" class="UIButton large green save" value="Save Changes" /><a href="#" class="UIButton large grey save"><span class="UIButtonTxt">Cancel</span></a></td>
+                                    </tr>
+                                </tbody>
+                        </table>
+		  </form>
+		  <form method="POST" action="?jelloon=affirm&jelloonContent=Changes saved.#work">
+                        <table id="workInfoTable" class="infoEditor hidden"  border="0" cellspacing="0">
+                            <input type="hidden" name="section" value="work"/>     
+                                <tbody>
+                                    <tr>
+                                        <td class="label">Company name:</td>
+                                        <td class="value">
+                                            <div class="firstItem companyName">
+                                                <input type="text" class="UITextInput" maxlength="50" name="company[name]" value="<?=$this->info["company"]["name"];?>"/>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="hidden">
+                                        <td class="label">Worked there:</td>
+                                        <td class="value">
+                                            <div class="firstItem company">
+					        from
+                                                <select name="company[fromMonth]">
+                                                    <option value="">Select month:</option>
+						    <?php
+						    $months = array("January","February","March","April","May","June","July","August","September","October","November","December");
+						    foreach($months as $key => $month) {
+							$key++;
+							if($this->info["company"]["fromMonth"]) {
+							    $selected = ($this->info["company"]["fromMonth"] == $key) ? "selected" : NULL;
+							}
+							echo "<option $selected value=\"$key\">$month</option>";
+					
+						    }
+						    ?>
+                                                </select>
+                                                <select name="company[fromYear]">
+                                                    <option value="">Select year:</option>
+						    
+                                                    <?php
+							$i = 2011;
+							while ($i > 1900) {
+							    if($this->info["company"]["fromYear"]) {
+								$selected = ($this->info["company"]["fromYear"] == $i) ? "selected" : NULL;
+							    }
+							    echo "<option $selected value=\"$i\">$i</option>";
+							    $i--;
+							}
+							?>
+						    
+                                                </select><br />
+						<div id="companyToDate" <?=($this->info["company"]["current"] == "true")?"style='display: none;'":NULL;?>>to&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                <select name="company[toMonth]">
+                                                    <option value="">Select month:</option>
+						    <?php
+						    $months = array("January","February","March","April","May","June","July","August","September","October","November","December");
+						    foreach($months as $key => $month) {
+							$key++;
+							if($this->info["company"]["toMonth"]) {
+							    $selected = ($this->info["company"]["toMonth"] == $key) ? "selected" : NULL;
+							}
+							echo "<option $selected value=\"$key\">$month</option>";
+					
+						    }
+						    ?>
+                                                </select>
+                                                <select name="company[toYear]">
+                                                    <option value="">Select year:</option>
+                                                    <?php
+							$i = 2011;
+							while ($i > 1900) {
+							    if($this->info["company"]["toYear"]) {
+								$selected = ($this->info["company"]["toYear"] == $i) ? "selected" : NULL;
+							    }
+							    echo "<option $selected value=\"$i\">$i</option>";
+							    $i--;
+							}
+							?>
+                                                </select>
+						</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">Position:</td>
+                                        <td class="value">
+                                            <div class="firstItem position">
+                                                <input type="text" class="UITextInput" maxlength="50" name="company[position]" value="<?=$this->info["company"]["position"];?>"/>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label"></td>
+                                        <td class="value"><input type="checkbox" class="UICheckbox currentInstitution" onclick="$('#companyToDate').toggle();" name="company[current]" value="true"
+					<?=($this->info["company"]["current"] == "true")?"checked":NULL;?>/> I currently work here</td>
+                                    </tr>
+                               
+                                    <tr>
+                                        <td colspan="2" style="height: 60px"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="UIPanel" colspan="2"><input type="submit" class="UIButton large green save" value="Save Changes" /><a href="#" class="UIButton large grey cancel"><span class="UIButtonTxt">Cancel</span></a></td>
+                                    </tr>
+                                </tbody>          
+                        </table>
+		    </form>
+                    </div>
+                </td>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

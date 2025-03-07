@@ -1,0 +1,9 @@
+
+<div class="mainWrapper">
+    <h3>Photo Gallery</h3>
+    <p>The Photo Gallery holds all of your profile pictures. you can upload as many pictures as you want , as long as they're in an accepted format and no bigger than 1 MB.</p>
+    <div class="note">
+        <h3>Allowed formats for photos</h3>
+        <p>We allow the PNG, JPG, and GIF formats.</p>
+    </div>
+</div>

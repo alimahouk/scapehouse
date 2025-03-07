@@ -1,0 +1,11 @@
+<?php
+
+$replies = $this->replies;
+$scapeTable = new Logged_Model_DbTable_Scape();
+$scapeOwnerid = $scapeTable->getUserid($this->scapeid);
+foreach ($replies as $reply) {echo Logged_Model_Reply::display($reply,FALSE,$scapeOwnerid);}
+
+?>
+
+
+

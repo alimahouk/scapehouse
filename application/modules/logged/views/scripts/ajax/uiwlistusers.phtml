@@ -1,0 +1,42 @@
+<?php
+$type = $this->type;
+$userids = json_decode($this->userids);
+$photo = new Logged_Model_Photo();
+$userids = array_unique($userids);
+
+foreach($userids as $userid) {
+
+    if($userid != $GLOBALS["session"]->id) { // Session users id is included in the json Id, need to avoid showing the session user in list
+        
+        
+        $usersTable = new Model_DbTable_Users();
+        $user = $usersTable->getUserById($userid);
+        
+       if($GLOBALS["session"]){ // Dont check the watchlist if public
+        
+        $watchlistTable = new Logged_Model_DbTable_Watchlist();
+        $watching = $watchlistTable->isWatching($GLOBALS["session"]->id,$userid);
+        
+        
+        if($watching) {
+            $watchStatus = "<div class='watchStatus'><span class=\"UIIcon px16 tick\"></span>Watching</div>";
+        }else {
+            $watchStatus = "<a class=\"UIButton large grey watch\" title=\"Add this person to your watchlist\" onclick=\"O.watch.create(this,{$userid})\"><span class=\"UIIcon px16 watchlist\"></span><span class=\"UIButtonTxt\">Watch</span></a>";
+        }
+    }
+        echo <<<MARKUP
+
+            <div class="UITableCell" id="LI$userid">
+                <div class="watchStatusHolder">
+                $watchStatus
+               </div>
+                <div class="cellPicture"><a href="/{$user["username"]}/profile"><img src="{$photo->display($userid, "user", "small")}" class="authorThmbnlSmall" alt="{$user["fullname"]}" /></a></div>
+                <h4 class="userName"><a href="/{$user["username"]}/profile">{$user["fullname"]}</a><span>$text</span></h4>
+            </div>
+MARKUP;
+    }
+}
+
+?>
+<div class="endMarker">That's it</div>
+
