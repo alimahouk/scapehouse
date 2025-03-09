@@ -14,4 +14,4 @@ This project is licensed under the terms specified in the LICENSE file.
 
 ## Author
 
-Created by Ali Mahouk and Abdullah Khan.
+Created by Ali Mahouk and Abdullah Khan in 2009-2010.
